@@ -370,37 +370,28 @@ function App() {
             <div className="mb-2" style={{ color: "#8a7a9a", fontSize: "10px", letterSpacing: "2px", fontFamily: "'JetBrains Mono',monospace", fontWeight: 700 }}>
               ▸ GUILD ROSTER — {PARTY.filter(m => !m.hiddenUntilQuest || s.uq.includes(m.hiddenUntilQuest)).length}/{PARTY.length}
             </div>
-            {PARTY.map(m => {
-              const hidden = m.hiddenUntilQuest && !s.uq.includes(m.hiddenUntilQuest);
-              return (
+            {PARTY.filter(m => !m.hiddenUntilQuest || s.uq.includes(m.hiddenUntilQuest)).map(m => (
                 <div key={m.name} className="rounded-lg p-3 flex items-center gap-3 card-padding transition-all duration-500" style={{
-                  background: hidden ? "rgba(6,4,10,0.7)" : `linear-gradient(135deg,${t.card},rgba(16,10,24,0.6))`,
-                  border: hidden ? "1px dashed rgba(100,80,140,0.2)" : `1px solid ${m.color || t.accent}55`,
-                  opacity: hidden ? 0.5 : 1,
+                  background: `linear-gradient(135deg,${t.card},rgba(16,10,24,0.6))`,
+                  border: `1px solid ${m.color || t.accent}55`,
                 }}>
                   <div className="w-12 h-12 rounded flex items-center justify-center shrink-0 overflow-hidden" style={{
-                    background: hidden ? "rgba(10,6,18,0.7)" : `${m.color || t.accent}1a`,
-                    border: `2px solid ${hidden ? "#2a1a3a" : (m.color || t.accent) + "aa"}`,
-                    boxShadow: hidden ? "none" : `0 0 12px ${(m.color || t.accent)}44`,
+                    background: `${m.color || t.accent}1a`,
+                    border: `2px solid ${(m.color || t.accent)}aa`,
+                    boxShadow: `0 0 12px ${(m.color || t.accent)}44`,
                   }}>
-                    {hidden ? <span style={{ color: "#3d2d55", fontSize: "22px", fontWeight: 900 }}>?</span> : <span className="text-xl">{m.icon}</span>}
+                    <span className="text-xl">{m.icon}</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div style={{ color: hidden ? "#3d2d55" : (m.color || t.accent), fontSize: "14px", fontWeight: 900, fontFamily: "'Cinzel',serif", letterSpacing: "0.5px" }}>
-                      {hidden ? "???" : m.name}
+                    <div style={{ color: m.color || t.accent, fontSize: "14px", fontWeight: 900, fontFamily: "'Cinzel',serif", letterSpacing: "0.5px" }}>
+                      {m.name}
                     </div>
-                    <div style={{ color: hidden ? "#2a1a3a" : "#a8988a", fontSize: "11px", marginTop: "2px", fontFamily: "'JetBrains Mono',monospace", letterSpacing: "0.5px" }}>
-                      {hidden ? "SIGNAL · LOST" : `${m.cls.toUpperCase()} · ${m.role}`}
+                    <div style={{ color: "#a8988a", fontSize: "11px", marginTop: "2px", fontFamily: "'JetBrains Mono',monospace", letterSpacing: "0.5px" }}>
+                      {`${m.cls.toUpperCase()} · ${m.role}`}
                     </div>
                   </div>
-                  {hidden && (
-                    <div style={{ color: "#ff4060", fontSize: "9px", letterSpacing: "2px", fontWeight: 900, fontFamily: "'JetBrains Mono',monospace" }}>
-                      MISSING
-                    </div>
-                  )}
                 </div>
-              );
-            })}
+            ))}
 
             {/* Jonna card — the target */}
             <div className="mt-4 rounded-lg p-4 card-padding relative overflow-hidden" style={{
