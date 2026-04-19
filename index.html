@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Eternal Bond</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: #080510;
+        }
+        @media (min-width: 768px) {
+            .app-container {
+                max-width: 480px;
+                margin: 0 auto;
+            }
+            .title-font {
+                font-size: 32px !important;
+            }
+            .level-title {
+                font-size: 28px !important;
+            }
+            .tab-buttons {
+                padding: 12px !important;
+            }
+            .card-padding {
+                padding: 20px !important;
+            }
+        }
+        @media (min-width: 1024px) {
+            .app-container {
+                max-width: 600px;
+            }
+            .title-font {
+                font-size: 36px !important;
+            }
+            .level-title {
+                font-size: 32px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // Polyfill for window.storage to mimic async localStorage
+        window.storage = {
+            get: async (key) => {
+                const value = localStorage.getItem(key);
+                return value ? { value } : null;
+            },
+            set: async (key, value) => {
+                localStorage.setItem(key, value);
+            }
+        };
+
+        // Paste the JSX content here
+        const { useState, useEffect, useCallback, useRef } = React;
+
+        const QUESTS = [
+          { num: 1, act: "ACT I", actName: "THE SUMMONING", title: "The Summoning of the Holy Priest", code: "LFGRAID", difficulty: "Mandatory", xp: 100, perk: null, flavor: "Stäng ner det du gör. Spara inte. Det spelar ingen roll längre.", body: "I exakt 12,636 dagar har du levt ditt liv som om inget väntade. Du har gått till jobbet. Du har ätit lunch. Du har svarat på mail som ingen bryr sig om. Allt medan 'The Eternal Bond' närmar sig - den mäktigaste ritualen en Priest som du kan genomgå. Bindandet av din själ till en annan. Permanent. Ingen Dispel. Ingen ragequit.\n\nVi - din GUILD har sett på från avstånd. Men vi har nu beslutat att du är inte redo. Inte än.\n\nDärför har vi samlats här idag. Vi är ditt party - och detta är din sista kampanj. En serie prövningar genom [***REDACTED***], designade för att testa om du verkligen är värdig 'The Eternal Bond'.", objective: "Drick upp. Se upp. All abord the hypetrain.", rules: ["Du får INTE veta vart vi ska eller vad vi ska göra", "Du får INTE kontakta Jonna förrän partyt ger dig clearance", "Du följer Raid Leaders instruktioner utan ifrågasättande", "Bryter du reglerna: −500 XP"], quote: "Every hero's journey begins with leaving the Auction House." },
+          { num: 2, act: "ACT I", actName: "THE SUMMONING", title: "Through the Portal", code: "BUFFPLS", difficulty: "Moderate", xp: 50, perk: "PRIEST'S BLESSING — Peka på valfri partymedlem och säg 'Blessing of the Priest.' Den personen MÅSTE följa med och hjälpa dig bära. Denna perk gäller endast innan portalen öppnas.", flavor: "Portalen surrar av uråldrig magi. På andra sidan väntar ett land av prövningar. Det finns ingen Hearthstone tillbaka.", body: "Vi kan inte berätta vart portalen leder - det strider mot Guild Protocol sektion 4, paragraf 32: \"du får inte veta\". Det vi KAN säga: på andra sidan finns en server du inte kontrollerar och prövningar som kräver mer av dig än att flame:a noobs i chatten. Nej, här krävs det att du steppar upp till och bevisar att du är värdig ditt destiny.\n\nEn healer som inte buffar sitt party är en healer som wipar sitt party. Innan portalen öppnas har du en helig plikt.", objective: "Förse ditt party med provisions (DRYCK OCH SNACKS) inför resan. En Priest som inte sörjer för sitt party förtjänar inte sin titel.", rules: ["Du betalar givetvis, medveten om att vi har lagt ut fett med deg på detta"], quote: "Loading screen tips: Om du inte vet vart du ska, följ tanken." },
+          { num: 3, act: "ACT I", actName: "THE SUMMONING", title: "The Inn", code: "RESTED", difficulty: "Trivial (enjoy it while it lasts)", xp: 50, perk: "HEALER PRIVILEGE — Du får önska vem du vill sova med. Men om din kärleksförklaring inte blir besvarad får du -1400 XP i \"Reputation\".", flavor: "Du har klivit genom portalen. Du lever. Det är troligen en bra start.", body: "Runt dig breder ett nytt land ut sig. Lukterna är annorlunda. Språket nästan begripligt. Valutan suspekt. Men ditt party har säkrat ett värdshus och bas för kampanjens kommande prövningar.\n\nNjut av lugnet. Det varar inte. Ikväll väntar din första prövning, och den kräver att du är utvilad, påklädd, och mentalt förberedd för saker du inte kan föreställa dig.", objective: "Checka in. Orientera dig. Förbered dig för kvällen.", rules: ["Inga smygsamtal till Jonna", "Raid Leader utser tid och plats för guildens återsamlande. Kom i tid!"], quote: "Inn music playing. You feel rested. Your XP bar glows faintly." },
+          { num: 4, act: "ACT I", actName: "THE SUMMONING", title: "Reinforcements from the Eastern Kingdoms", code: "LFGMORE", difficulty: "Emotional", xp: 150, perk: null, flavor: "Minns du party-rostern? Minns du de tomma platserna?", body: "Hunter: \"Ej lokaliserad. Signal förlorad.\" Shaman: \"Ej lokaliserad. Signal förlorad.\"\n\nVi ljög inte. Deras signal VAR förlorad. De befann sig i andra delar av riket, långt bortom räckhåll. Vi visste inte om de skulle hinna. Vi visste inte om portalen skulle hålla.\n\nMen den höll.\n\nDe är här nu. Din Hunter och din Shaman. De korsade länder och tidszoner för att stå vid din sida i kampanjens avgörande fas. Ditt party är nu vid FULL STRENGTH — och det är precis vad du kommer att behöva.", objective: "Välkomna dina förlorade allierade med en proper Guild Greeting: en gruppshot, alla nio.", rules: ["Raid difficulty ökar. Partyt är komplett."], quote: "LFG complete. Nine souls. One destiny. Zero excuses." },
+          { num: 5, act: "ACT I", actName: "THE SUMMONING", title: "The Feast of Gods", code: "WARPIGS", difficulty: "Hard", xp: 150, perk: "+150 XP Om du även berättar hur du känner alla i partyt eftersom detta är första gången vi ses lol", flavor: "Gudarna ler mot oss och blessar oss med kött och kall öl.", body: "Ditt party eskorterar dig till en grand hall. Vi kan inte avslöja dess namn, det kommer tala för sig självt när dörrarna öppnas.\n\nMen mitt i festens kaos har du en uppgift som ingen healing kan rädda dig från.", objective: "Du ska, inför ditt samlade party, berätta om den person du valt att binda din själ till. Inte 'jag älskar Jonna för att hon är snäll' — det kan en NPC säga. Berätta och utelämna inget!", rules: ["+50 XP om partyt höjer sina bägare och ropar WORTHY", "−25 XP varje gång du kollar mobilen under kvällen"], quote: "Leeroy Jenkins drog aldrig in i en feast oförberedd. Okej, det gjorde han. Men du är bättre än Leeroy." },
+          { num: 6, act: "ACT I", actName: "THE SUMMONING", title: "A Dark Presence Approaches", code: "SUMMON", difficulty: "Unpredictable", xp: 100, perk: "☠️ TOASTMASTER'S CURSE — Warlock Christian har ETT uppdrag/dare som kan komma när som helst. Du kan inte neka. Du kan inte Dispela. Du kan inte Fade.", flavor: "Du kände det, eller hur? Temperaturen sjönk. Ölskummet vibrerade i ditt glas som en seismograf för incoming doom.", body: "Och sen - stegen. Tunga steg. De klapprande spanska höfterna.\n\nEn Warlock har anslutit sig till ditt party.\n\nWarlocks är opålitliga, och har en tendens att sacrificea partymedlemmar för personlig vinning. MEN - denna Warlock kommer med en titel: Toastmaster. Hans makt är specifik, begränsad, och exakt lika skrämmande som det låter.", objective: "Välkomna din nya allierade. Hela partyt ska skåla - en välkomstshot krävs av samtliga. Det är Guild Protocol.", rules: [], quote: "You hear a faint whisper: 'I have candy.' You should not follow the Warlock. You will anyway." },
+          { num: 7, act: "ACT II", actName: "THE TRIALS", title: "The Morning Resurrection", code: "REZPLZ", difficulty: "Depends on last night", xp: 50, perk: null, flavor: "Solen stiger. Din mana bar är tom. Din health bar flimrar i rött.", body: "Det finns en ironisk skönhet i det här: du, en HEALER, som inte kan heala dig själv. Hela din karriär har du stått bakom andra och hållit dem vid liv. Du har kastat Renew på Warriors som rushat in utan plan. Du har desperatcastat Flash Heal på Mages som stått i AoE:n IGEN.\n\nOch nu ligger du här. I en säng du knappt minns att du la dig i. Med en smak i munnen som antyder att du åt något som inte borde existera.\n\nMen en Priest faller inte. En Priest RESER SIG.", objective: "Res dig. Hitta frukost. Överlev den.", rules: ["+25 XP om du är FÖRST upp och väcker resten av partyt"], quote: "You are not prepared. — Illidan, som aldrig behövde hantera en hotellfrukost med hangover." },
+          { num: 8, act: "ACT II", actName: "THE TRIALS", title: "The Trial of the Unknown", code: "SHADOW", difficulty: "[REDACTED]", xp: 200, perk: null, flavor: "Du har healat. Du har buffat. Du har stått i bakre raden. Idag blir du DPS.", body: "Det är dags för din första raid. Den kommer kräva både strategi, ledarskap, våld och en hel del tur.", objective: "Genomför alla prövningarna. Detaljer avslöjas on site. Lita på din Raid Leader.", rules: ["Bonusar och straff avslöjas on site"], quote: "Switching spec from Holy to Shadow. Please wait... please wait..." },
+          { num: 9, act: "ACT II", actName: "THE TRIALS", title: "The Market of a Thousand Flavors", code: "OMNOM", difficulty: "Medium (your stomach may disagree)", xp: 100, perk: null, flavor: "Lukterna blandas med havsvind. Röster ropar på språk du inte förstår. Eld flammar från riktningar du inte förväntar sig.", body: "Din quest har fört dig till en handelskvarterszon — ett Merchant Quarter — där mästare från jordens alla hörn samlats för att erbjuda saker din mage aldrig bett om men ditt hjärta inte kan motstå.\n\nDet här är en quest om TILLIT. Du har tillbringat hela ditt liv med att välja tryggt. Healers gör det — ni väljer det säkra, det beprövade. Men ibland, Priest, måste du välja det okända.", objective: "Free-for-all", rules: [], quote: "Cooking skill increased to 376. But at what cost?" },
+          { num: 10, act: "ACT II", actName: "THE TRIALS", title: "The Final Feast Before the Eternal Bond", code: "BONFIRE", difficulty: "Legendary", xp: 300, perk: "🔥 PRIEST'S LAST COMMAND — Du får ge ETT uppdrag till valfri partymedlem. Vad som helst. Ikväll.", flavor: "Det här är det, Priest. Din sista kväll som obunden.", body: "Imorgon börjar resan hem, och efter det — The Eternal Bond. Jonna väntar. Resten av ditt liv väntar.\n\nMen ikväll sitter du vid ett bord med åtta människor som reste till ett annat land för att fira DIG. Åtta helt separata liv med egna jobb, egna planer, egna problem. Och de valde att vara HÄR. Med DIG.\n\nDet är inte \"kul med grabbarna.\" Det är ett guild som säger: du betyder något för oss. På riktigt.", objective: "Enjoy!", rules: ["-Varje skål MÅSTE avslutas med antingen For the horde eller For Jonna!", "+25 XP Om du håller tal till en partymedlem", "+25 XP om du blir synbart rörd"], quote: "For the Horde. For the Alliance. For Jonna." },
+          { num: 11, act: "ACT III", actName: "THE RETURN", title: "Hearthstone", code: "GG", difficulty: "Bittersweet", xp: 0, perk: null, flavor: "Du har klarat det.", body: "Tre akter. Elva quests. Hundratals XP. Minnen som inte går att Dispela.\n\nKampanjen är slut. Du sov dåligt, du åt för mycket, du drack saker som förmodligen inte var lagliga i ditt hemland, och du har haft det bästa du haft sedan... ja. Sedan sist vi alla var samlade (aldrig).\n\nNu trycker du på Hearthstone. Du reser hem. Till ditt vanliga liv — fast ingenting är vanligt längre. Jonna väntar. The Eternal Bond väntar.", objective: "Packa ihop. Checka ut. Lämna inget bakom dig — varken i rummet eller i ditt hjärta.", rules: [], quote: "You have been disconnected from the server. Reason: real life is calling." },
+        ];
+
+        const SIDE_QUESTS = [
+          { id: "sq1", unlocksAtLevel: 2, type: "CHALLENGE", title: "First Blood", description: "Beställ en dryck utan att kolla menyn. Peka och säg 'that one'. Ingen ånger.", xp: 25, code: "YOLO" },
+          { id: "sq2", unlocksAtLevel: 3, type: "GUILD RULE", title: "Decree of the Disciple", description: "Du får införa EN regel som gäller hela guildet i 30 minuter. Regeln kan inte innebära att någon måste spendera pengar.", xp: 50, code: "MYLAW" },
+          { id: "sq3", unlocksAtLevel: 3, type: "GRIND", title: "Reputation Grind: Jonna", description: "Skicka ett meddelande till Jonna som innehåller orden 'eternal bond' utan att förklara varför. Screenshotta hennes svar.", xp: 50, code: "JONNA1" },
+          { id: "sq4", unlocksAtLevel: 4, type: "CHALLENGE", title: "Battlecry", description: "Gå fram till en främling och säg 'For The Horde' med full conviction. Bonuspoäng om de svarar.", xp: 50, code: "LOK" },
+          { id: "sq5", unlocksAtLevel: 5, type: "GRIND", title: "Potion Master", description: "Drick tre olika shots under kvällen. En av varje färg: ljus, mörk, och 'varför finns detta'. Rapportera till Raid Leader.", xp: 50, code: "3SHOTS" },
+          { id: "sq6", unlocksAtLevel: 5, type: "CHALLENGE", title: "Blurred memories of Destiny", description: "Ta en selfie med valfri partymedlem. Båda måste göra sitt bästa 'epic raid victory'-ansikte.", xp: 25, code: "SELFIE" },
+          { id: "sq7", unlocksAtLevel: 6, type: "GUILD RULE", title: "Archon's Mandate", description: "Välj en partymedlem. Den personen måste hämta dryck/mat åt dig nästa gång gruppen beställer. Ingen förhandling.", xp: 25, code: "FETCH" },
+          { id: "sq8", unlocksAtLevel: 7, type: "GRIND", title: "Bard Mode: Activated", description: "Gå fram till DJ:n och be om att få rappa en 50cent låt. 10.000 XP om du klarar det.", xp: 75, code: "BARD" },
+          { id: "sq9", unlocksAtLevel: 8, type: "CHALLENGE", title: "Inspect Element", description: "Ge en ärlig, ofiltrerad compliment till varje partymedlem. Inte 'du är cool' — något specifikt. Alla åtta.", xp: 100, code: "INSPECT" },
+          { id: "sq10", unlocksAtLevel: 9, type: "GUILD RULE", title: "Exalted Decree", description: "Du får byta namn på en partymedlem för resten av kvällen. Alla MÅSTE använda det nya namnet.", xp: 50, code: "RENAME" },
+        ];
+
+        const LOOT = [
+          { sqId: "sq1",  icon: "🍺", name: "Liquid Courage Potion",   desc: "Du bestämmer vad nästa shots-runda ska vara. Hela partyt lyder." },
+          { sqId: "sq2",  icon: "📜", name: "Scroll of Domination",     desc: "En guild-regel du kan aktivera en gång senare under kvällen. Ingen kan neka." },
+          { sqId: "sq3",  icon: "💌", name: "Jonna's Blessing",         desc: "+50 bonus-XP om Jonna svarar med hjärtan eller förvirrat 'wtf'." },
+          { sqId: "sq4",  icon: "🏴", name: "Banner of the Horde",      desc: "Hela partyt måste ropa 'FOR THE HORDE' med dig, en gång, när du väljer." },
+          { sqId: "sq5",  icon: "⚗️", name: "Alchemist's Flask",        desc: "Du kan delegera ett shot till valfri partymedlem. De kan inte tacka nej." },
+          { sqId: "sq6",  icon: "📸", name: "Amulet of Memories",       desc: "Fotot postas permanent i guild-chatten. Inget tas bort. Evigt." },
+          { sqId: "sq7",  icon: "💍", name: "Ring of Command",          desc: "Valfri partymedlem är din personliga butler i 5 minuter. Full lydnad." },
+          { sqId: "sq8",  icon: "🎸", name: "Lute of Legends",          desc: "Välj en låt som hela partyt MÅSTE sjunga med på. Ingen undslipper." },
+          { sqId: "sq9",  icon: "👁️", name: "Eye of the Beholder",     desc: "Valfri partymedlem MÅSTE ge dig en ärlig komplimang, direkt, inför alla." },
+          { sqId: "sq10", icon: "👑", name: "Crown of the Exalted",     desc: "Välj ett nytt titel/smeknamn för dig själv som alla MÅSTE använda resten av kvällen." },
+        ];
+
+        const LEVELS = [
+          { level: 1, title: "Acolyte", xp: 0 },
+          { level: 2, title: "Novice Priest", xp: 100 },
+          { level: 3, title: "Disciple", xp: 250 },
+          { level: 4, title: "Cleric", xp: 400 },
+          { level: 5, title: "High Priest", xp: 600 },
+          { level: 6, title: "Archon", xp: 800 },
+          { level: 7, title: "Prophet", xp: 1000 },
+          { level: 8, title: "Ascendant", xp: 1250 },
+          { level: 9, title: "Exalted", xp: 1500 },
+          { level: 10, title: "Eternal", xp: 1800 },
+        ];
+
+        const RANKS = [
+          { min: 0,    max: 99,    name: "Unworthy",               flavor: "Inte ens din mamma är imponerad." },
+          { min: 100,  max: 299,   name: "Barely Tolerated",       flavor: "Guildet accepterar dig. Motvilligt." },
+          { min: 300,  max: 549,   name: "Questionably Adequate",  flavor: "Du existerar. Det är en start." },
+          { min: 550,  max: 799,   name: "Grudgingly Accepted",    flavor: "Ingen är imponerad. Ännu." },
+          { min: 800,  max: 1049,  name: "Almost Decent",          flavor: "Svagt. Men märkbart." },
+          { min: 1050, max: 1299,  name: "Shows Promise",          flavor: "Det rör sig... kanske." },
+          { min: 1300, max: 1549,  name: "Respectable",            flavor: "Jonna nickar. Osäkert, men ändå." },
+          { min: 1550, max: 1799,  name: "Battle-Hardened",        flavor: "Du förtjänar din plats i guildet." },
+          { min: 1800, max: 99999, name: "Worthy of Eternal Bond", flavor: "Realm First. Inga ord räcker till." },
+        ];
+        function getRank(xp) { return RANKS.find(r => xp >= r.min && xp <= r.max) || RANKS[RANKS.length - 1]; }
+
+        const PERKS_DATA = [
+          { questNum: 2,  name: "PRIEST'S BLESSING",    desc: "Peka på valfri partymedlem och säg 'Blessing of the Priest.' Den personen MÅSTE följa med och hjälpa dig bära. Denna perk gäller endast innan portalen öppnas.", icon: "🙏" },
+          { questNum: 3,  name: "HEALER PRIVILEGE",      desc: "Du får önska vem du vill sova med. Men om din kärleksförklaring inte blir besvarad får du -1400 XP i \"Reputation\".", icon: "🛏️" },
+          { questNum: 6,  name: "TOASTMASTER'S CURSE",   desc: "Warlock Christian har ETT uppdrag/dare som kan komma när som helst. Du kan inte neka. Du kan inte Dispela. Du kan inte Fade.", icon: "☠️" },
+          { questNum: 10, name: "PRIEST'S LAST COMMAND", desc: "Du får ge ETT uppdrag till valfri partymedlem. Vad som helst. Ikväll.", icon: "🔥" },
+        ];
+
+        const PARTY = [
+          { name: "Mauritz", cls: "Holy Priest", icon: "✝️", role: "The one who heals must now be healed", hiddenUntilQuest: null },
+          { name: "Gustaf", cls: "Paladin", icon: "⚔️", role: "Raid Leader · Best Man", hiddenUntilQuest: null },
+          { name: "Philip", cls: "Rogue", icon: "🗡️", role: "Shadow Operative", hiddenUntilQuest: null },
+          { name: "Christian", cls: "Warlock", icon: "🔥", role: "Toastmaster", hiddenUntilQuest: 6 },
+          { name: "Olof", cls: "Hunter", icon: "🏹", role: "Reinforcement", hiddenUntilQuest: 4 },
+          { name: "David", cls: "Shaman", icon: "🌿", role: "Reinforcement", hiddenUntilQuest: 4 },
+          { name: "Martin W", cls: "Warrior", icon: "🛡️", role: "Tank", hiddenUntilQuest: null },
+          { name: "Filip", cls: "Mage", icon: "✨", role: "DPS", hiddenUntilQuest: null },
+          { name: "Martin I", cls: "Death Knight", icon: "💀", role: "Wildcard", hiddenUntilQuest: null },
+        ];
+
+        const THEMES = [
+          // L1 Acolyte — cold stone, dim silver-purple
+          { bg1: "#1a1025", bg2: "#0e0a18", accent: "#a8a0c0", glow: "rgba(168,160,192,0.10)", card: "rgba(22,14,34,0.88)" },
+          // L2 Novice Priest — deep purple awakening
+          { bg1: "#16102a", bg2: "#0c0818", accent: "#9080d8", glow: "rgba(144,128,216,0.14)", card: "rgba(20,12,38,0.88)" },
+          // L3 Disciple — electric indigo, arcane
+          { bg1: "#120e30", bg2: "#0a0820", accent: "#7060e8", glow: "rgba(112,96,232,0.18)", card: "rgba(16,10,44,0.88)" },
+          // L4 Cleric — blue-purple, disciplined shadow
+          { bg1: "#0e0c38", bg2: "#080828", accent: "#5080e0", glow: "rgba(80,128,224,0.18)", card: "rgba(12,10,50,0.88)" },
+          // L5 High Priest — icy blue, high power
+          { bg1: "#0d1030", bg2: "#080c22", accent: "#30a0d8", glow: "rgba(48,160,216,0.20)", card: "rgba(10,12,42,0.88)" },
+          // L6 Archon — blood rose, corruption begins
+          { bg1: "#200816", bg2: "#14050e", accent: "#cc3060", glow: "rgba(204,48,96,0.22)", card: "rgba(28,8,20,0.90)" },
+          // L7 Prophet — crimson, blood magic
+          { bg1: "#2a0810", bg2: "#180408", accent: "#dd2020", glow: "rgba(221,32,32,0.25)", card: "rgba(34,6,14,0.90)" },
+          // L8 Ascendant — coal black + ember orange
+          { bg1: "#200810", bg2: "#100408", accent: "#e06020", glow: "rgba(224,96,32,0.28)", card: "rgba(26,6,14,0.92)" },
+          // L9 Exalted — night + hellfire
+          { bg1: "#150508", bg2: "#0a0304", accent: "#f04010", glow: "rgba(240,64,16,0.32)", card: "rgba(20,4,10,0.92)" },
+          // L10 Eternal — absolute black + chaos fire
+          { bg1: "#0a0306", bg2: "#050103", accent: "#ff2040", glow: "rgba(255,32,64,0.38)", card: "rgba(14,2,8,0.94)" },
+        ];
+
+        const SK = "eternal-bond-v2";
+        async function load() { try { const r = await window.storage.get(SK); if (r?.value) { const d = JSON.parse(r.value); return { uq: [], csq: [], bxp: 0, gc: false, dx: false, bs: 0, ...d }; } } catch {} return { uq: [], csq: [], bxp: 0, gc: false, dx: false, bs: 0 }; }
+        async function save(s) { try { await window.storage.set(SK, JSON.stringify(s)); } catch {} }
+
+        function calcXP(s) {
+          const base = s.uq.reduce((a, n) => a + (QUESTS.find(q => q.num === n)?.xp || 0), 0);
+          return s.dx ? Math.floor(base * 1.5) : base;
+        }
+        function getLvl(xp) { return LEVELS.reduce((b, l) => xp >= l.xp ? l : b, LEVELS[0]); }
+
+        function CodeInput({ onOk, code }) {
+          const [v, setV] = useState("");
+          const [e, setE] = useState(false);
+          const MASTER = "GMMODE";
+          const submit = () => { const val = v.toUpperCase().trim(); if (val === code || val === MASTER) { onOk(); setV(""); } else { setE(true); setTimeout(() => setE(false), 1500); } };
+          return (
+            React.createElement("div", { className: "flex gap-2 mt-3" },
+              React.createElement("input", { type: "text", value: v, onChange: ev => setV(ev.target.value), onKeyDown: ev => ev.key === "Enter" && submit(), placeholder: "Enter code...", className: "flex-1 px-3 py-2 rounded text-sm outline-none", style: { background: "rgba(20,14,32,0.9)", border: e ? "1px solid #cc4444" : "1px solid rgba(201,168,76,0.3)", color: "#f0e6d0", fontFamily: "monospace" }, autoFocus: true }),
+              React.createElement("button", { onClick: submit, className: "px-4 py-2 rounded text-xs font-bold", style: { background: "linear-gradient(135deg, #8a6d2b, #c9a84c)", color: "#1a1025" } }, "UNLOCK")
+            )
+          );
+        }
+
+        function QCard({ q, unlocked, onUnlock, t }) {
+          const [sc, setSc] = useState(false);
+          const [ex, setEx] = useState(false);
+          if (!unlocked) return (
+            React.createElement("div", { className: "mb-3 rounded-lg p-4 card-padding", style: { background: "rgba(14,8,24,0.85)", border: "1px solid rgba(120,100,160,0.15)" } },
+              React.createElement("div", { className: "flex items-center justify-between" },
+                React.createElement("div", { className: "flex items-center gap-3" },
+                  React.createElement("div", { className: "w-10 h-10 rounded-full flex items-center justify-center font-bold", style: { background: "rgba(100,80,140,0.10)", border: "1px solid rgba(120,100,160,0.20)", color: "#6a5a7a", fontFamily: "'Cinzel',serif", fontSize: "16px" } }, q.num),
+                  React.createElement("div", null,
+                    React.createElement("div", { style: { color: "#6a5a7a", fontSize: "10px", letterSpacing: "1.5px" } }, q.act + " — " + q.actName),
+                    React.createElement("div", { style: { color: "#5a4a6a", fontFamily: "'Cinzel',serif", fontSize: "14px", fontWeight: 700 } }, "🔒 LOCKED")
+                  )
+                ),
+                !sc && React.createElement("button", { onClick: () => setSc(true), className: "px-3 py-1.5 rounded text-xs font-bold", style: { background: "rgba(100,80,140,0.10)", border: "1px solid rgba(120,100,160,0.30)", color: "#7a6a8a" } }, "CODE")
+              ),
+              sc && React.createElement(CodeInput, { code: q.code, onOk: () => onUnlock(q.num) })
+            )
+          );
+          return (
+            React.createElement("div", { className: "mb-3 rounded-lg overflow-hidden", style: { border: `1px solid ${t.accent}44`, boxShadow: `0 0 20px ${t.glow}` } },
+              React.createElement("div", { className: "px-4 py-3 cursor-pointer", style: { background: `linear-gradient(135deg, ${t.accent}22, ${t.card})`, borderBottom: `1px solid ${t.accent}33` }, onClick: () => setEx(!ex) },
+                React.createElement("div", { className: "flex items-center justify-between" },
+                  React.createElement("div", { className: "flex items-center gap-3" },
+                    React.createElement("div", { className: "w-10 h-10 rounded-full flex items-center justify-center font-bold", style: { background: `${t.accent}20`, border: `2px solid ${t.accent}`, color: t.accent, fontFamily: "'Cinzel',serif", fontSize: "16px" } }, q.num),
+                    React.createElement("div", null,
+                      React.createElement("div", { style: { color: "#b8a88a", fontSize: "10px", letterSpacing: "1.5px" } }, q.act + " — " + q.actName),
+                      React.createElement("div", { style: { color: t.accent, fontFamily: "'Cinzel',serif", fontSize: "14px", fontWeight: 700 } }, q.title)
+                    )
+                  ),
+                  React.createElement("span", { style: { color: t.accent } }, ex ? "▾" : "▸")
+                )
+              ),
+              ex && (
+                React.createElement("div", { className: "px-4 py-4 card-padding", style: { background: "rgba(20,14,32,0.5)" } },
+                  React.createElement("div", { className: "mb-3", style: { color: "#8a7a9a", fontSize: "11px", letterSpacing: "1px" } }, "DIFFICULTY: " + q.difficulty),
+                  React.createElement("div", { className: "rounded p-3 mb-4", style: { background: "rgba(20,14,32,0.7)", borderLeft: `3px solid ${t.accent}` } },
+                    React.createElement("p", { style: { color: t.accent, fontSize: "14px", fontStyle: "italic", lineHeight: 1.5 } }, q.flavor)
+                  ),
+                  React.createElement("div", { className: "mb-4", style: { color: "#d4c8b0", fontSize: "13px", lineHeight: 1.7 } },
+                    q.body.split("\n\n").map((p, i) => React.createElement("p", { key: i, className: "mb-3" }, p))
+                  ),
+                  React.createElement("div", { className: "mb-4" },
+                    React.createElement("div", { style: { color: t.accent, fontSize: "11px", letterSpacing: "1.5px", fontWeight: 700, marginBottom: "6px" } }, "DIN QUEST"),
+                    React.createElement("div", { style: { color: "#f0e6d0", fontSize: "13px", lineHeight: 1.6 } }, q.objective)
+                  ),
+                  q.rules.length > 0 && React.createElement("div", { className: "mb-4" },
+                    React.createElement("div", { style: { color: t.accent, fontSize: "11px", letterSpacing: "1.5px", fontWeight: 700, marginBottom: "6px" } }, "REGLER & BONUSAR"),
+                    q.rules.map((r, i) => React.createElement("div", { key: i, className: "flex gap-2 mb-1", style: { color: r.includes("−") ? "#cc4444" : "#b8a88a", fontSize: "12px" } },
+                      React.createElement("span", { style: { color: t.accent } }, "◆"),
+                      React.createElement("span", null, r)
+                    ))
+                  ),
+                  q.perk && React.createElement("div", { className: "rounded p-3 mb-4", style: { background: "linear-gradient(135deg,rgba(92,184,92,0.1),rgba(201,168,76,0.1))", border: "1px solid rgba(92,184,92,0.3)" } },
+                    React.createElement("div", { style: { color: "#5cb85c", fontSize: "11px", letterSpacing: "1.5px", fontWeight: 700, marginBottom: "4px" } }, "ABILITY UNLOCK"),
+                    React.createElement("div", { style: { color: "#d4c8b0", fontSize: "12px", lineHeight: 1.5 } }, q.perk)
+                  ),
+                  React.createElement("div", { className: "rounded p-3 flex items-center justify-between", style: { background: `${t.accent}0d`, border: `1px solid ${t.accent}33` } },
+                    React.createElement("span", { style: { color: t.accent, fontFamily: "'Cinzel',serif", fontSize: "14px", fontWeight: 700 } }, q.xp > 0 ? `+${q.xp} XP` : "CAMPAIGN COMPLETE"),
+                    q.levelUp && React.createElement("span", { style: { color: "#5cb85c", fontSize: "11px", fontWeight: 700 } }, "LEVEL UP → " + q.levelUp)
+                  ),
+                  React.createElement("div", { className: "mt-4 text-center", style: { color: "#4a3a5a", fontSize: "11px", fontStyle: "italic" } }, "\"" + q.quote + "\"")
+                )
+              )
+            )
+          );
+        }
+
+        function SQCard({ sq, done, onDone, t }) {
+          const [sc, setSc] = useState(false);
+          const tc = { CHALLENGE: "#e07030", "GUILD RULE": "#30a0e0", GRIND: "#a050d0" }[sq.type] || "#c9a84c";
+          return (
+            React.createElement("div", { className: "mb-2 rounded-lg p-3 card-padding", style: { background: done ? "rgba(92,184,92,0.06)" : "rgba(30,20,51,0.6)", border: done ? "1px solid rgba(92,184,92,0.25)" : "1px solid rgba(201,168,76,0.1)", opacity: done ? 0.6 : 1 } },
+              React.createElement("div", { className: "flex items-start justify-between gap-2" },
+                React.createElement("div", { className: "flex-1" },
+                  React.createElement("div", { className: "flex items-center gap-2 mb-1" },
+                    React.createElement("span", { className: "px-2 py-0.5 rounded font-bold", style: { background: `${tc}15`, color: tc, fontSize: "9px", letterSpacing: "1px" } }, sq.type),
+                    React.createElement("span", { style: { color: "#5a4a6a", fontSize: "10px" } }, "+" + sq.xp + " XP")
+                  ),
+                  React.createElement("div", { style: { color: done ? "#5cb85c" : t.accent, fontFamily: "'Cinzel',serif", fontSize: "13px", fontWeight: 700 } }, (done ? "✓ " : "") + sq.title),
+                  React.createElement("div", { style: { color: "#b8a88a", fontSize: "12px", lineHeight: 1.5, marginTop: "4px" } }, sq.description)
+                ),
+                !done && !sc && React.createElement("button", { onClick: () => setSc(true), className: "px-2 py-1 rounded text-xs font-bold shrink-0 mt-1", style: { background: `${tc}12`, border: `1px solid ${tc}35`, color: tc } }, "DONE")
+              ),
+              sc && !done && React.createElement(CodeInput, { code: sq.code, onOk: () => { onDone(sq.id); setSc(false); } })
+            )
+          );
+        }
+
+        function FireEffect({ level }) {
+          if (level < 7) return null;
+          const intensity = level - 6; // 1-4
+          const count = intensity * 6;
+          const colors = {
+            7: ["#ff8040","#ff6020","#ff9030"],
+            8: ["#ff6020","#ff4010","#ff8030","#e05010"],
+            9: ["#ff4010","#ff2000","#ff6020","#cc1800","#ff8040"],
+            10: ["#ff2040","#ff4010","#cc0030","#ff8020","#aa00cc","#ff0060"],
+          };
+          const palette = colors[Math.min(level,10)];
+          const particles = Array.from({length: count}, (_,i) => {
+            const useEmber = i % 3 === 2;
+            const size = 8 + (i * 7 % (6 + intensity * 2));
+            const left = 4 + (i * 97 % 92);
+            const delay = (i * 0.28 % 2.2).toFixed(2);
+            const dur = (1.4 + i * 0.17 % 1.1).toFixed(2);
+            const color = palette[i % palette.length];
+            const blur = level >= 9 ? "2px" : "1px";
+            return {id:i, size, left, delay, dur, color, useEmber, blur};
+          });
+          return React.createElement("div", {
+            style:{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:"600px",height:"140px",pointerEvents:"none",overflow:"hidden",zIndex:2}
+          },
+            particles.map(p => React.createElement("div", {
+              key: p.id,
+              style:{
+                position:"absolute",
+                bottom: "4px",
+                left: p.left + "%",
+                width: p.size + "px",
+                height: p.size + "px",
+                borderRadius: "50% 50% 40% 40%",
+                background: `radial-gradient(circle at 40% 35%, ${p.color}ff, ${p.color}88 50%, transparent 80%)`,
+                filter: `blur(${p.blur})`,
+                animation: `${p.useEmber ? "emberDrift" : "fireFloat"} ${p.dur}s ${p.delay}s ease-out infinite`,
+              }
+            }))
+          );
+        }
+
+        function App() {
+          const [s, setS] = useState({ uq: [], csq: [], bxp: 0, gc: false, dx: false, bs: 0 });
+          const [loading, setLoading] = useState(true);
+          const [tab, setTab] = useState("quests");
+          const [lua, setLua] = useState(null);
+          const [pua, setPua] = useState(null);
+          const plr = useRef(1);
+          const puaQueue = useRef([]);
+
+          useEffect(() => { load().then(d => { setS(d); setLoading(false); }); }, []);
+
+          useEffect(() => {
+            const allR = PARTY.every(m => !m.hiddenUntilQuest || s.uq.includes(m.hiddenUntilQuest));
+            if (allR && !s.dx && s.uq.length > 0) { const ns = { ...s, gc: true, dx: true }; setS(ns); save(ns); }
+          }, [s.uq]);
+
+          const xp = calcXP(s);
+          const lvl = getLvl(xp);
+          const rank = getRank(xp);
+          const nxt = LEVELS.find(l => l.xp > xp);
+          const nxtRank = RANKS.find(r => r.min > xp);
+          const t = THEMES[lvl.level - 1];
+          const chkLvl = useCallback((ns) => {
+            const x = calcXP(ns);
+            const nl = getLvl(x);
+            if (nl.level > plr.current) {
+              const nsReset = { ...ns, bs: 0 };
+              setS(nsReset);
+              save(nsReset);
+              setLua(nl);
+              plr.current = nl.level;
+            }
+          }, []);
+
+          const unlockQ = useCallback(async (n) => {
+            const ns = { ...s, uq: [...s.uq, n] };
+            setS(ns);
+            await save(ns);
+            const willLvlUp = getLvl(calcXP(ns)).level > plr.current;
+            chkLvl(ns);
+            const perk = PERKS_DATA.find(p => p.questNum === n);
+            if (perk) {
+              if (willLvlUp) { puaQueue.current.push(perk); }
+              else { setTimeout(() => setPua(perk), 600); }
+            }
+          }, [s, chkLvl]);
+
+          const doneS = useCallback(async (id) => { const ns = { ...s, csq: [...s.csq, id] }; setS(ns); await save(ns); }, [s]);
+
+          const dismissLua = useCallback(() => {
+            setLua(null);
+            if (puaQueue.current.length > 0) {
+              const next = puaQueue.current.shift();
+              setTimeout(() => setPua(next), 300);
+            }
+          }, []);
+          const dismissPua = useCallback(() => { setPua(null); }, []);
+
+          useEffect(() => { plr.current = lvl.level; }, []);
+
+          const avSQ = SIDE_QUESTS.filter(sq => lvl.level >= sq.unlocksAtLevel);
+          const pendSQ = avSQ.filter(sq => !s.csq.includes(sq.id));
+
+          if (loading) return React.createElement("div", { className: "min-h-screen flex items-center justify-center", style: { background: "#1a1025" } }, React.createElement("div", { style: { color: "#c9a84c", fontFamily: "'Cinzel',serif" } }, "Loading campaign..."));
+
+          return (
+            React.createElement("div", { className: "min-h-screen transition-all duration-1000 app-container", style: { background: `linear-gradient(180deg, ${t.bg1} 0%, ${t.bg2} 100%)`, fontFamily: "'Segoe UI',system-ui,sans-serif", animation: lvl.level === 10 ? "bgFlicker 2.5s ease-in-out infinite" : undefined } },
+              React.createElement(FireEffect, { level: lvl.level }),
+              React.createElement("style", null, `@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&display=swap');
+@keyframes levelUp{0%{opacity:0;transform:scale(.5) translateY(20px)}20%{opacity:1;transform:scale(1.1) translateY(0)}100%{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
+@keyframes fireFloat{0%{transform:translateY(0) scale(1) rotate(0deg);opacity:0.85}50%{transform:translateY(-50px) scale(1.15) rotate(5deg);opacity:0.6}100%{transform:translateY(-110px) scale(0.35) rotate(-5deg);opacity:0}}
+@keyframes emberDrift{0%{transform:translateY(0) translateX(0);opacity:0.9}30%{transform:translateY(-30px) translateX(8px);opacity:0.7}60%{transform:translateY(-70px) translateX(-5px);opacity:0.4}100%{transform:translateY(-130px) translateX(4px);opacity:0}}
+@keyframes bgFlicker{0%,100%{opacity:1}50%{opacity:0.93}}
+@keyframes perkReveal{0%{opacity:0;transform:scale(0.6) translateY(30px)}25%{opacity:1;transform:scale(1.05) translateY(0)}100%{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px) rotate(-1deg)}40%{transform:translateX(4px) rotate(1deg)}60%{transform:translateX(-3px) rotate(-0.5deg)}80%{transform:translateX(3px) rotate(0.5deg)}}
+@keyframes perkShimmer{0%{background-position:-300% center}100%{background-position:300% center}}
+@keyframes perkIconPop{0%{transform:scale(0)}30%{transform:scale(1.3)}60%{transform:scale(0.9)}100%{transform:scale(1)}}`),
+              lua && React.createElement("div", { className: "fixed inset-0 z-50 flex items-center justify-center", style: { background: "rgba(0,0,0,0.92)", overflow: "hidden" }, onClick: dismissLua },
+                React.createElement("div", { className: "text-center px-8", style: { animation: "levelUp 0.6s forwards" } },
+                  React.createElement("div", { style: { color: "#e8d48b", fontSize: "13px", letterSpacing: "5px", marginBottom: "12px", opacity: 0.8 } }, "LEVEL UP"),
+                  React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontSize: "72px", fontWeight: 900, background: "linear-gradient(90deg,#8a6d2b,#e8d48b,#c9a84c,#e8d48b,#8a6d2b)", backgroundSize: "200% auto", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", animation: "shimmer 2s linear infinite", lineHeight: 1 } }, lua.level),
+                  React.createElement("div", { style: { color: t.accent, fontFamily: "'Cinzel',serif", fontSize: "16px", fontWeight: 700, marginTop: "10px", letterSpacing: "2px" } }, rank.name),
+                  React.createElement("div", { style: { color: "#6a5a7a", fontSize: "11px", marginTop: "20px", letterSpacing: "2px" } }, "— Tryck för att fortsätta —")
+                )
+              ),
+              pua && React.createElement("div", { className: "fixed inset-0 z-50 flex items-center justify-center", style: { background: "rgba(0,0,0,0.94)" }, onClick: dismissPua },
+                React.createElement("div", { className: "text-center px-8 max-w-sm", style: { animation: "perkReveal 0.6s forwards" } },
+                  React.createElement("div", { style: { color: "#5cb85c", fontSize: "11px", letterSpacing: "4px", marginBottom: "16px" } }, "NEW POWER UNLOCKED"),
+                  React.createElement("div", { style: { fontSize: "56px", marginBottom: "12px", animation: "perkIconPop 0.6s 0.3s both" } }, pua.icon),
+                  React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontSize: "18px", fontWeight: 900, background: `linear-gradient(90deg,${t.accent}88,${t.accent},${t.accent}cc,${t.accent},${t.accent}88)`, backgroundSize: "300% auto", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", animation: "perkShimmer 2.5s linear infinite", marginBottom: "16px" } }, pua.name),
+                  React.createElement("div", { className: "rounded-lg p-4", style: { background: `${t.accent}10`, border: `1px solid ${t.accent}44`, color: "#d4c8b0", fontSize: "13px", lineHeight: 1.6 } }, pua.desc),
+                  React.createElement("div", { style: { color: "#4a3a5a", fontSize: "10px", marginTop: "20px", letterSpacing: "2px" } }, "— Tap to dismiss —")
+                )
+              ),
+              React.createElement("div", { className: "px-4 pt-6 pb-4" },
+                React.createElement("div", { className: "text-center mb-1" },
+                  React.createElement("div", { style: { color: t.accent, fontSize: "10px", letterSpacing: "4px", opacity: 0.7 } }, "CAMPAIGN"),
+                  React.createElement("h1", { key: t.accent, className: "title-font", style: { fontFamily: "'Cinzel',serif", fontSize: "26px", fontWeight: 900, background: `linear-gradient(180deg, ${t.accent}, ${t.accent}88)`, backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", lineHeight: 1.2 } }, "THE ETERNAL", React.createElement("br", null), "BOND"),
+                  React.createElement("div", { style: { color: t.accent, fontSize: "12px", marginTop: "6px", fontStyle: "italic", fontFamily: "'Cinzel',serif", opacity: 0.75, letterSpacing: "1px" } }, "For the Horde. For the Alliance. For Jonna."),
+                  React.createElement("div", { style: { color: "#6a5a7a", fontSize: "11px", marginTop: "4px", fontStyle: "italic" } }, "The Lands Beyond · April 2026")
+                ),
+                React.createElement("div", { className: "mt-4 rounded-lg p-4 transition-all duration-1000 card-padding", style: { background: `linear-gradient(135deg, ${t.bg1}, ${t.card})`, border: `2px solid ${t.accent}44`, boxShadow: `0 0 40px ${t.glow}, inset 0 0 40px ${t.glow}` } },
+                  React.createElement("div", { className: "text-center mb-3" },
+                    React.createElement("div", { style: { color: "#8a7a9a", fontSize: "10px", letterSpacing: "2px" } }, "HOLY PRIEST MAURITZ"),
+                    React.createElement("div", { className: "level-title", style: { fontFamily: "'Cinzel',serif", fontSize: "22px", fontWeight: 700, color: t.accent, marginTop: "2px", textShadow: `0 0 20px ${t.glow}` } }, rank.name),
+                    s.dx && React.createElement("div", { style: { color: "#5cb85c", fontSize: "10px", marginTop: "5px", letterSpacing: "1px", animation: "pulse 2s infinite" } }, "⚡ GUILD COMPLETE · 1.5x XP ⚡")
+                  ),
+                  React.createElement("div", { className: "w-full" },
+                    React.createElement("div", { className: "flex justify-between items-baseline mb-1" },
+                      React.createElement("span", { style: { color: t.accent, fontFamily: "'Cinzel',serif", fontSize: "13px", fontWeight: 700 } }, "LEVEL " + lvl.level),
+                      React.createElement("span", { style: { color: "#b8a88a", fontSize: "12px" } }, xp + " / " + (nxt?.xp || "MAX") + " XP")
+                    ),
+                    React.createElement("div", { className: "w-full rounded-full overflow-hidden", style: { height: "12px", background: "rgba(20,14,32,0.8)", border: `1px solid ${t.accent}33` } },
+                      React.createElement("div", { className: "h-full rounded-full transition-all duration-1000", style: { width: `${Math.min(100, Math.max(2, nxt ? ((xp - lvl.xp) / (nxt.xp - lvl.xp)) * 100 : 100))}%`, background: `linear-gradient(90deg, ${t.accent}88, ${t.accent}, ${t.accent}cc)`, boxShadow: `0 0 12px ${t.accent}66` } })
+                    )
+                  ),
+                  React.createElement("div", { className: "flex justify-between mt-3 px-1" },
+                    LEVELS.map(l => React.createElement("div", { key: l.level, className: "flex flex-col items-center", style: { width: "20px" } },
+                      React.createElement("div", { className: "w-3 h-3 rounded-full transition-all duration-500", style: { background: lvl.level >= l.level ? t.accent : "rgba(20,14,32,0.8)", border: `1px solid ${lvl.level >= l.level ? t.accent : t.accent + "22"}`, boxShadow: lvl.level === l.level ? `0 0 8px ${t.accent}` : "none" } }),
+                      React.createElement("span", { style: { color: lvl.level >= l.level ? t.accent : "#2a1a3a", fontSize: "8px", marginTop: "2px", fontWeight: lvl.level === l.level ? 700 : 400 } }, l.level)
+                    ))
+                  ),
+                  React.createElement("div", { className: "flex justify-between mt-2", style: { fontSize: "10px", color: "#7a6a8a" } },
+                    React.createElement("span", null, s.uq.length + "/" + QUESTS.length + " quests"),
+                    React.createElement("span", null, s.csq.length + "/" + SIDE_QUESTS.length + " side quests")
+                  )
+                )
+              ),
+              React.createElement("div", { className: "flex px-4 mb-4 gap-1" },
+                [
+                  { id: "quests", label: "QUESTS" },
+                  { id: "side", label: "SIDE", badge: pendSQ.length || null, badgeColor: "#ff6020" },
+                  { id: "party", label: "GUILD" },
+                  { id: "rating", label: "POWER" }
+                ].map(tb => (
+                  React.createElement("button", { key: tb.id, onClick: () => setTab(tb.id), className: "flex-1 py-2 rounded text-xs font-bold tracking-wider relative tab-buttons", style: { background: tab === tb.id ? `${t.accent}18` : "rgba(20,10,32,0.7)", border: tab === tb.id ? `1px solid ${t.accent}55` : "1px solid rgba(100,80,140,0.12)", color: tab === tb.id ? t.accent : "#5a4a6a" } },
+                    tb.label,
+                    tb.badge ? React.createElement("span", { className: "absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center", style: { background: tb.badgeColor, color: "#fff", fontSize: "10px", fontWeight: 700, boxShadow: `0 0 8px ${tb.badgeColor}`, animation: "pulse 1.5s infinite" } }, tb.badge) : null
+                  )
+                ))
+              ),
+              React.createElement("div", { className: "px-4 pb-8" },
+                tab === "quests" && QUESTS.map(q => React.createElement(QCard, { key: q.num, q: q, unlocked: s.uq.includes(q.num), onUnlock: unlockQ, t: t })),
+                tab === "side" && (avSQ.length === 0 ? React.createElement("div", { className: "text-center py-8", style: { color: "#4a3a5a" } }, React.createElement("div", { style: { fontSize: "24px", marginBottom: "8px" } }, "🔒"), React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontSize: "14px" } }, "Side quests låses upp vid Level 2")) : React.createElement(React.Fragment, null,
+                  avSQ.map(sq => React.createElement(SQCard, { key: sq.id, sq: sq, done: s.csq.includes(sq.id), onDone: doneS, t: t })),
+                  SIDE_QUESTS.filter(sq => lvl.level < sq.unlocksAtLevel).length > 0 && React.createElement("div", { className: "text-center mt-4", style: { color: "#6a5a7a", fontSize: "11px", fontStyle: "italic" } }, "Fler side quests låses upp vid högre levels...")
+                )),
+                tab === "party" && React.createElement("div", { className: "space-y-2" },
+                  (() => {
+                    const revealed = PARTY.filter(m => !m.hiddenUntilQuest || s.uq.includes(m.hiddenUntilQuest));
+                    const hasHidden = PARTY.some(m => m.hiddenUntilQuest && !s.uq.includes(m.hiddenUntilQuest));
+                    return [
+                      ...revealed.map(m => React.createElement("div", { key: m.name, className: "rounded-lg p-3 flex items-center gap-3 card-padding", style: { background: `linear-gradient(135deg,${t.card},rgba(20,10,30,0.6))`, border: `1px solid ${t.accent}33` } },
+                        React.createElement("div", { className: "w-12 h-12 rounded-full flex items-center justify-center shrink-0 overflow-hidden", style: { background: `${t.accent}15`, border: `2px solid ${t.accent}55`, boxShadow: `0 0 10px ${t.glow}` } },
+                          React.createElement("span", { className: "text-xl" }, m.icon)
+                        ),
+                        React.createElement("div", { className: "flex-1 min-w-0" },
+                          React.createElement("div", { style: { color: t.accent, fontSize: "13px", fontWeight: 700, fontFamily: "'Cinzel',serif" } }, m.name),
+                          React.createElement("div", { style: { color: "#8a7a9a", fontSize: "11px", marginTop: "2px" } }, `${m.cls} · ${m.role}`)
+                        )
+                      )),
+                      ...(hasHidden ? [React.createElement("div", { key: "hidden", className: "rounded-lg p-3 flex items-center gap-3 card-padding", style: { background: "rgba(10,6,18,0.6)", border: "1px solid rgba(100,80,140,0.08)", opacity: 0.35 } },
+                        React.createElement("div", { className: "w-12 h-12 rounded-full flex items-center justify-center shrink-0", style: { background: "rgba(10,6,18,0.5)", border: "2px solid #1a0a2a" } },
+                          React.createElement("span", { style: { color: "#2a1a3a", fontSize: "18px" } }, "?")
+                        ),
+                        React.createElement("div", { className: "flex-1 min-w-0" },
+                          React.createElement("div", { style: { color: "#2a1a3a", fontSize: "13px", fontWeight: 700, fontFamily: "'Cinzel',serif" } }, "???"),
+                          React.createElement("div", { style: { color: "#1a0a2a", fontSize: "11px", marginTop: "2px" } }, "...")
+                        )
+                      )] : [])
+                    ];
+                  })(),
+                  (() => {
+                    const all = PARTY.every(m => !m.hiddenUntilQuest || s.uq.includes(m.hiddenUntilQuest));
+                    return all ? React.createElement("div", { className: "rounded-lg p-4 text-center mt-3 card-padding", style: { background: `linear-gradient(135deg,rgba(92,184,92,0.1),${t.accent}10)`, border: "1px solid rgba(92,184,92,0.35)" } }, React.createElement("div", { style: { color: "#5cb85c", fontFamily: "'Cinzel',serif", fontSize: "16px", fontWeight: 700 } }, "⚔️ GUILD COMPLETE ⚔️"), React.createElement("div", { style: { color: "#b8a88a", fontSize: "11px", marginTop: "4px" } }, "Partyt är samlat. 1.5x XP MULTIPLIER ACTIVE.")) : React.createElement("div", { className: "rounded-lg p-3 text-center mt-3 card-padding", style: { background: "rgba(8,4,14,0.5)", border: "1px solid rgba(100,80,140,0.10)" } }, React.createElement("div", { style: { color: "#5a4a6a", fontSize: "11px" } }, "Inte alla är här ännu..."));
+                  })()
+                ),
+                tab === "rating" && (() => {
+                  const completedPerks = [2,3,6,10].filter(n => s.uq.includes(n)).length;
+                  const rankPct = nxtRank ? Math.round((xp - rank.min) / (nxtRank.min - rank.min) * 100) : 100;
+                  return React.createElement(React.Fragment, null,
+                    React.createElement("div", { className: "rounded-lg p-5 mb-3 text-center card-padding", style: { background: `linear-gradient(135deg, ${t.card}, rgba(8,2,12,0.94))`, border: `1px solid ${t.accent}44`, boxShadow: `0 0 40px ${t.glow}` } },
+                      React.createElement("div", { style: { color: t.accent, fontFamily: "'Cinzel',serif", fontSize: "10px", letterSpacing: "4px", marginBottom: "12px", opacity: 0.7 } }, "CURRENT RANK"),
+                      React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontSize: rank.name.length > 12 ? "20px" : "26px", fontWeight: 900, color: t.accent, lineHeight: 1.2, textShadow: `0 0 25px ${t.glow}`, marginBottom: "8px" } }, rank.name),
+                      React.createElement("div", { style: { color: "#8a7a9a", fontSize: "12px", fontStyle: "italic", marginBottom: "14px" } }, rank.flavor),
+                      React.createElement("div", { className: "w-full rounded-full overflow-hidden", style: { height: "6px", background: "rgba(8,2,12,0.8)", border: `1px solid ${t.accent}22` } },
+                        React.createElement("div", { style: { width: rankPct + "%", height: "100%", background: `linear-gradient(90deg, ${t.accent}66, ${t.accent})`, transition: "width 1.5s", borderRadius: "9999px", boxShadow: `0 0 6px ${t.accent}66` } })
+                      ),
+                      nxtRank && React.createElement("div", { style: { color: "#5a4a6a", fontSize: "10px", marginTop: "6px", textAlign: "right" } }, "Next: " + nxtRank.name + " · " + (nxtRank.min - xp) + " XP"),
+                      React.createElement("div", { className: "flex justify-around mt-4", style: { fontSize: "10px", color: "#6a5a7a", borderTop: `1px solid ${t.accent}18`, paddingTop: "10px" } },
+                        React.createElement("span", null, s.uq.length + "/11 quests"),
+                        React.createElement("span", null, s.csq.length + "/10 side"),
+                        React.createElement("span", null, completedPerks + "/4 perks")
+                      )
+                    ),
+                    React.createElement("div", { className: "rounded-lg p-4 mb-3 card-padding", style: { background: t.card, border: `1px solid ${t.accent}22` } },
+                      React.createElement("div", { style: { color: t.accent, fontFamily: "'Cinzel',serif", fontSize: "12px", fontWeight: 700, letterSpacing: "2px", marginBottom: "10px" } }, "🎒 LOOT"),
+                      s.csq.length === 0
+                        ? React.createElement("div", { style: { color: "#4a3a5a", fontSize: "11px", fontStyle: "italic", textAlign: "center", padding: "8px 0" } }, "Inga side quests slutförda ännu.")
+                        : LOOT.filter(l => s.csq.includes(l.sqId)).map(l =>
+                            React.createElement("div", { key: l.sqId, className: "rounded p-3 mb-2", style: { background: `${t.accent}0a`, border: `1px solid ${t.accent}33` } },
+                              React.createElement("div", { className: "flex items-start gap-2" },
+                                React.createElement("span", { style: { fontSize: "18px", lineHeight: 1.2, minWidth: "24px" } }, l.icon),
+                                React.createElement("div", { className: "flex-1" },
+                                  React.createElement("div", { style: { color: t.accent, fontFamily: "'Cinzel',serif", fontSize: "11px", fontWeight: 700, marginBottom: "2px" } }, l.name),
+                                  React.createElement("div", { style: { color: "#c8b898", fontSize: "11px", lineHeight: 1.5 } }, l.desc)
+                                )
+                              )
+                            )
+                          ),
+                      LOOT.filter(l => !s.csq.includes(l.sqId)).length > 0 && React.createElement("div", { style: { color: "#3a2a4a", fontSize: "10px", textAlign: "center", marginTop: "6px", fontStyle: "italic" } }, LOOT.filter(l => !s.csq.includes(l.sqId)).length + " loot-items kvar att hitta...")
+                    ),
+                    React.createElement("div", { className: "rounded-lg p-4 mb-3 card-padding", style: { background: t.card, border: `1px solid ${t.accent}22` } },
+                      React.createElement("div", { style: { color: t.accent, fontFamily: "'Cinzel',serif", fontSize: "12px", fontWeight: 700, letterSpacing: "2px", marginBottom: "10px" } }, "✦ ACTIVE PERKS"),
+                      PERKS_DATA.map(p => {
+                        const active = s.uq.includes(p.questNum);
+                        return React.createElement("div", { key: p.questNum, className: "rounded p-3 mb-2", style: { background: active ? `${t.accent}0e` : "rgba(8,4,14,0.6)", border: `1px solid ${active ? t.accent + "44" : "rgba(80,60,110,0.10)"}`, opacity: active ? 1 : 0.45 } },
+                          React.createElement("div", { className: "flex items-start gap-2" },
+                            React.createElement("span", { style: { fontSize: "16px", lineHeight: 1.3, minWidth: "22px" } }, active ? p.icon : "🔒"),
+                            React.createElement("div", { className: "flex-1" },
+                              React.createElement("div", { className: "flex items-center gap-2 mb-1" },
+                                active && React.createElement("span", { style: { color: t.accent, fontFamily: "'Cinzel',serif", fontSize: "10px", fontWeight: 700 } }, p.name),
+                                React.createElement("span", { style: { color: active ? "#5cb85c" : "#663333", fontSize: "9px", fontWeight: 700 } }, active ? "✓ ACTIVE" : "LOCKED")
+                              ),
+                              active
+                                ? React.createElement("div", { style: { color: "#c8b898", fontSize: "11px", lineHeight: 1.6 } }, p.desc)
+                                : React.createElement("div", { style: { color: "#5a4a6a", fontSize: "10px" } }, "Låses upp vid Quest " + p.questNum)
+                            )
+                          )
+                        );
+                      })
+                    ),
+                    React.createElement("div", { className: "rounded-lg p-4 mb-3 card-padding", style: { background: t.card, border: `1px solid ${t.accent}22` } },
+                      React.createElement("div", { style: { color: t.accent, fontFamily: "'Cinzel',serif", fontSize: "12px", fontWeight: 700, letterSpacing: "2px", marginBottom: "10px" } }, "🌳 LEVEL TREE"),
+                      LEVELS.map((l, i) => {
+                        const reached = lvl.level >= l.level;
+                        const current = lvl.level === l.level;
+                        return React.createElement("div", { key: l.level },
+                          React.createElement("div", { className: "flex items-center gap-2 py-0.5" },
+                            React.createElement("div", { style: { width: "22px", height: "22px", borderRadius: "50%", background: reached ? t.accent : "rgba(8,4,14,0.9)", border: `2px solid ${reached ? t.accent : "rgba(80,60,110,0.18)"}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: current ? `0 0 10px ${t.accent}` : "none", fontSize: "9px", fontWeight: 700, color: reached ? "#080210" : "#3a2a4a", fontFamily: "'Cinzel',serif" } }, l.level),
+                            React.createElement("span", { style: { color: reached ? t.accent : "#4a3a5a", fontSize: "12px", fontWeight: current ? 700 : 400, fontFamily: "'Cinzel',serif" } }, "Level " + l.level),
+                            !reached && React.createElement("span", { style: { color: "#3a2a4a", fontSize: "10px" } }, l.xp + " XP"),
+                            current && React.createElement("span", { style: { color: "#5cb85c", fontSize: "9px", letterSpacing: "1px", fontWeight: 700 } }, "◆ NOW")
+                          ),
+                          i < LEVELS.length - 1 && React.createElement("div", { style: { width: "2px", height: "8px", background: reached ? `${t.accent}40` : "rgba(80,60,110,0.10)", marginLeft: "10px" } })
+                        );
+                      })
+                    ),
+                    React.createElement("div", { className: "rounded-lg p-4 card-padding", style: { background: t.card, border: `1px solid ${t.accent}22` } },
+                      React.createElement("div", { style: { color: t.accent, fontFamily: "'Cinzel',serif", fontSize: "12px", fontWeight: 700, letterSpacing: "2px", marginBottom: "10px" } }, "⚔️ GUILD POWERS"),
+                      React.createElement("div", { className: "rounded p-3 mb-2", style: { background: s.gc ? "rgba(92,184,92,0.08)" : "rgba(8,4,14,0.7)", border: `1px solid ${s.gc ? "rgba(92,184,92,0.35)" : "rgba(80,60,110,0.12)"}` } },
+                        React.createElement("div", { className: "flex items-center justify-between mb-1" },
+                          React.createElement("span", { style: { color: s.gc ? "#5cb85c" : "#5a4a6a", fontFamily: "'Cinzel',serif", fontSize: "11px", fontWeight: 700 } }, "GUILD COMPLETE"),
+                          React.createElement("span", { style: { color: s.gc ? "#5cb85c" : "#663333", fontSize: "9px", fontWeight: 700 } }, s.gc ? "✓ ACTIVE" : "INCOMPLETE")
+                        ),
+                        React.createElement("div", { style: { color: s.gc ? "#c8b898" : "#4a3a5a", fontSize: "11px" } }, s.gc ? "Partyt är samlat. ⚔️" : "Avtäck alla partymedlemmar.")
+                      ),
+                      React.createElement("div", { className: "rounded p-3", style: { background: s.dx ? `${t.accent}0a` : "rgba(8,4,14,0.7)", border: `1px solid ${s.dx ? t.accent + "44" : "rgba(80,60,110,0.12)"}` } },
+                        React.createElement("div", { className: "flex items-center justify-between mb-1" },
+                          React.createElement("span", { style: { color: s.dx ? t.accent : "#5a4a6a", fontFamily: "'Cinzel',serif", fontSize: "11px", fontWeight: 700 } }, "1.5x XP MULTIPLIER"),
+                          React.createElement("span", { style: { color: s.dx ? "#5cb85c" : "#663333", fontSize: "9px", fontWeight: 700, animation: s.dx ? "pulse 2s infinite" : undefined } }, s.dx ? "⚡ ACTIVE" : "LOCKED")
+                        ),
+                        React.createElement("div", { style: { color: s.dx ? "#c8b898" : "#4a3a5a", fontSize: "11px" } }, s.dx ? "Alla XP ×1.5. Bonus: +" + (xp - Math.floor(xp / 1.5)) + " XP." : "Kräver: Guild Complete.")
+                      )
+                    )
+                  );
+                })()
+              )
+            )
+          );
+        }
+
+        ReactDOM.render(React.createElement(App), document.getElementById('root'));
+    </script>
+</body>
+</html>
