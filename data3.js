@@ -4,247 +4,239 @@
 
 window.QUESTS = [
   {
-    num: 1, act: "ACT I", actName: "THE CALL TO BOND",
-    title: "Summons from the Guild",
+    num: 1, act: "ACT I", actName: "THE SUMMONING",
+    title: "The Summoning of the Holy Priest",
     code: "LFGRAID",
-    difficulty: "MANDATORY",
+    difficulty: "Mandatory",
     xp: 100,
     tier: "rare",
     boss: null,
-    flavor: "Stäng ner datorn. Spara inte. Där du är på väg spelar dina unfinished tasks ingen roll längre.",
-    body: "I 347 dagar har du vaknat, jobbat, ätit, sovit. Levt som om ingenting närmade sig. Men något närmar sig. The Eternal Bond — ritualen som binder din själ till Jonnas. Permanent. Ingen Dispel. Ingen Fade. Ingen Hearthstone tillbaka.\n\nDitt guild har kallats. Vi har röstat. Beslutet är enhälligt: du är inte redo att bindas till henne. Inte som du står idag.\n\nDärför är vi här. Inte som vänner. Ditt Guild. Och detta är din sista kampanj som obunden. En serie trials genom ***REDACTED***, designade för att göra dig värdig Jonna. Eller krossa dig i försöket.",
+    flavor: "Stäng ner det du gör. Spara inte. Det spelar ingen roll längre.",
+    body: "I exakt 12,636 dagar har du levt ditt liv som om inget väntade. Du har gått till jobbet. Du har ätit lunch. Du har svarat på mail som ingen bryr sig om. Allt medan 'The Eternal Bond' närmar sig - den mäktigaste ritualen en Priest som du kan genomgå. Bindandet av din själ till en annan. Permanent. Ingen Dispel. Ingen ragequit.\n\nVi - din GUILD - har sett på från avstånd. Men vi har nu beslutat att du är inte redo. Inte än.\n\nDärför har vi samlats här idag. Vi är ditt party - och detta är din sista kampanj. En serie prövningar genom [***REDACTED***], designade för att testa om du verkligen är värdig 'The Eternal Bond'.",
     objective: "Drick upp. Se upp. All abord the hypetrain.",
     rules: [
-      "Du får INTE veta vart vi ska",
-      "Du får INTE kontakta Jonna utan Raid Leaders godkännande",
-      "Du följer ordergivning utan diskussion",
-      "Bryter du reglerna: −200 XP och vi berättar för Jonna om \"incidenten\""
+      "Du får INTE veta vart vi ska eller vad vi ska göra",
+      "Du får INTE kontakta Jonna förrän partyt ger dig clearance",
+      "Du följer Raid Leaders instruktioner utan ifrågasättande",
+      "Bryter du reglerna: −500 XP"
     ],
-    quote: "The Eternal Bond belongs to those who earn it. You have not. Yet."
+    quote: "Every hero's journey begins with leaving the Auction House."
   },
   {
-    num: 2, act: "ACT I", actName: "THE CALL TO BOND",
+    num: 2, act: "ACT I", actName: "THE SUMMONING",
     title: "Through the Portal",
     code: "BUFFPLS",
-    difficulty: "MODERATE",
+    difficulty: "Moderate",
     xp: 50,
     tier: "common",
     boss: null,
-    perk: "PRIEST'S BLESSING — Peka på valfri partymedlem och säg 'Blessing of the Priest.' Den personen MÅSTE köpa en dryck åt dig. EN gång hela kampanjen. Välj rätt moment.",
-    flavor: "Portalen vibrerar. Den bryr sig inte om att du är nervös.",
-    body: "Vart den leder kan vi inte säga — det är emot Guild Protocol, paragraf 4: 'The Priest får inte veta.' Men vi kan säga så här: på andra sidan finns ett land där du inte kontrollerar något. Inte språket. Inte valutan. Inte schemat. Inte ens nästa måltid.\n\nDet är meningen. Jonna kommer att äga resten av ditt liv. Börja vänja dig vid att inte bestämma.\n\nEn healer som inte buffar sitt party är en healer som wipar sitt party. Innan du kliver igenom portalen har du en helig plikt.",
-    objective: "Förse ditt party med provisions. Du köper dryck och snacks åt alla. Vad som än krävs för att att nå destinationen levande.",
+    perk: "PRIEST'S BLESSING — Peka på valfri partymedlem och säg 'Blessing of the Priest.' Den personen MÅSTE följa med och hjälpa dig bära. Denna perk gäller endast innan portalen öppnas.",
+    flavor: "Portalen surrar av uråldrig magi. På andra sidan väntar ett land av prövningar. Det finns ingen Hearthstone tillbaka.",
+    body: "Vi kan inte berätta vart portalen leder - det strider mot Guild Protocol sektion 4, paragraf 32: \"du får inte veta\". Det vi KAN säga: på andra sidan finns en server du inte kontrollerar och prövningar som kräver mer av dig än att flame:a noobs i chatten. Nej, här krävs det att du steppar upp till och bevisar att du är värdig ditt destiny.\n\nEn healer som inte buffar sitt party är en healer som wipar sitt party. Innan portalen öppnas har du en helig plikt.",
+    objective: "Förse ditt party med provisions (DRYCK OCH SNACKS) inför resan. En Priest som inte sörjer för sitt party förtjänar inte sin titel.",
     rules: [
-      "Håll inte på och \"håll på\"",
-      "Du betalar givetvis eftersom vi redan betalt fett mkt för den här skiten"
+      "Du betalar givetvis, medveten om att vi har lagt ut fett med deg på detta"
     ],
-    quote: "Loading screen: Om du inte vet vart du ska, följ tanken."
+    quote: "Loading screen tips: Om du inte vet vart du ska, följ tanken."
   },
   {
-    num: 3, act: "ACT I", actName: "THE CALL TO BOND",
+    num: 3, act: "ACT I", actName: "THE SUMMONING",
     title: "The Inn",
     code: "RESTED",
-    difficulty: "TRIVIAL",
+    difficulty: "Trivial (enjoy it while it lasts)",
     xp: 50,
     tier: "common",
     boss: null,
-    perk: "HEALER'S PRIVILEGE — Du får checka in först.",
-    flavor: "Du lever. Portalen spottade ut dig på andra sidan. Det är en bättre start än många raids får.",
-    body: "Lukterna är annorlunda. Språket nästan begripligt. Valutan känns tveksamt legal. Men partyt har säkrat ett värdshus — kampanjens forward operating base.\n\nNjut av det här lugnet. Det varar inte. Ikväll börjar din första trial, och de kräver att du är utvilad, påklädd, och mentalt förberedd för saker Jonna aldrig kommer få höra om.",
-    objective: "Checka in. Orientera. Förbered dig. Drick vatten — du kommer behöva det.",
-    rules: [],
-    quote: "Inn music playing. You feel rested. XP bar glows faintly."
+    perk: "HEALER PRIVILEGE — Du får önska vem du vill sova med. Men om din kärleksförklaring inte blir besvarad får du -1400 XP i \"Reputation\".",
+    flavor: "Du har klivit genom portalen. Du lever. Det är troligen en bra start.",
+    body: "Runt dig breder ett nytt land ut sig. Lukterna är annorlunda. Språket nästan begripligt. Valutan suspekt. Men ditt party har säkrat ett värdshus och bas för kampanjens kommande prövningar.\n\nNjut av lugnet. Det varar inte. Ikväll väntar din första prövning, och den kräver att du är utvilad, påklädd, och mentalt förberedd för saker du inte kan föreställa dig.",
+    objective: "Checka in. Orientera dig. Förbered dig för kvällen.",
+    rules: [
+      "Inga smygsamtal till Jonna",
+      "Raid Leader utser tid och plats för guildens återsamlande. Kom i tid!"
+    ],
+    quote: "Inn music playing. You feel rested. Your XP bar glows faintly."
   },
   {
-    num: 4, act: "ACT I", actName: "THE CALL TO BOND",
-    title: "Feast of the gods",
+    num: 4, act: "ACT I", actName: "THE SUMMONING",
+    title: "Reinforcements from the Eastern Kingdoms",
+    code: "LFGMORE",
+    difficulty: "Emotional",
+    xp: 150,
+    tier: "epic",
+    boss: null,
+    flavor: "Minns du party-rostern? Minns du de tomma platserna?",
+    body: "Hunter: \"Ej lokaliserad. Signal förlorad.\"\nShaman: \"Ej lokaliserad. Signal förlorad.\"\n\nVi ljög inte. Deras signal VAR förlorad. De befann sig i andra delar av riket, långt bortom räckhåll. Vi visste inte om de skulle hinna. Vi visste inte om portalen skulle hålla.\n\nMen den höll.\n\nDe är här nu. Din Hunter och din Shaman. De korsade länder och tidszoner för att stå vid din sida i kampanjens avgörande fas. Ditt party är nu vid FULL STRENGTH — och det är precis vad du kommer att behöva.",
+    objective: "Välkomna dina förlorade allierade med en proper Guild Greeting: en gruppshot, alla nio.",
+    rules: [
+      "Raid difficulty ökar. Partyt är komplett."
+    ],
+    quote: "LFG complete. Nine souls. One destiny. Zero excuses."
+  },
+  {
+    num: 5, act: "ACT I", actName: "THE SUMMONING",
+    title: "The Feast of Gods",
     code: "WARPIGS",
-    difficulty: "HARD",
+    difficulty: "Hard",
     xp: 150,
     tier: "epic",
     boss: { name: "The Feast of the GODS", hp: 100, flavor: "Eld. Kött. Öl mörkare än Death Knights humor." },
-    flavor: "Din tid som lugn, ohotad Priest är officiellt över.",
-    body: "Partyt eskorterar dig till en plats. Vi avslöjar inte namnet — det talar för sig självt när dörrarna öppnas. Här handlar det om eld, kött, och drycker som inte borde vara lagliga.\n\nMen mitt i kaoset har du en uppgift ingen öl räddar dig från. Inför hela ditt samlade party ska du STÅ UPP och berätta om var och en av oss. Inte 'han är snäll' — det kan en NPC säga. Berätta om hur vi lärde känna dig. Vad vi betyder för dig och ett minne vi har tillsammans. Du har valt att ha ditt party i olika lobbys och detta är din uppgift. Förena oss - ikväll.\n\nPartyt lyssnar. Partyt dömer. Partyt avgör om du får WORTHY-tituleringen eller inte.",
-    objective: "Res dig. Tala. Gör det värdigt. Gör det så att vi tror dig.",
+    flavor: "Gudarna ler mot oss och blessar oss med kött och kall öl.",
+    body: "Ditt party eskorterar dig till en grand hall. Vi kan inte avslöja dess namn, det kommer tala för sig självt när dörrarna öppnas.\n\nMen mitt i festens kaos har du en uppgift som ingen healing kan rädda dig från.",
+    objective: "Du ska, inför ditt samlade party, berätta om den person du valt att binda din själ till. Inte 'jag älskar Jonna för att hon är snäll' — det kan en NPC säga. Berätta och utelämna inget!",
     rules: [
-      "+50 XP om hela partyt höjer bägarna och ropar WORTHY",
+      "+50 XP om partyt höjer sina bägare och ropar WORTHY",
       "−25 XP varje gång du kollar mobilen under kvällen",
-      "Lägg undan telefonerna. En feast är en feast."
+      "+150 XP om du även berättar hur du känner alla i partyt — detta är första gången vi ses"
     ],
-    quote: "Leeroy Jenkins höll aldrig tal om kärlek. Du är bättre än Leeroy. Bevisa det."
+    quote: "Leeroy Jenkins drog aldrig in i en feast oförberedd. Okej, det gjorde han. Men du är bättre än Leeroy."
   },
   {
-    num: 5, act: "ACT I", actName: "THE CALL TO BOND",
-    title: "A Dark Presence Arrives",
+    num: 6, act: "ACT I", actName: "THE SUMMONING",
+    title: "A Dark Presence Approaches",
     code: "SUMMON",
-    difficulty: "UNPREDICTABLE",
+    difficulty: "Unpredictable",
     xp: 100,
     tier: "rare",
     boss: null,
-    perk: "☠️ TOASTMASTER'S CURSE — Warlock Christian har ett speciellt dare/uppdrag som kan detoneras när som helst. Du kan inte neka. Du kan inte Dispela. Du kan inte Fade. Bitch.",
-    flavor: "Du kände det, eller hur? Temperaturen sjönk. Ölskummet vibrerade som en seismograf för incoming doom.",
-    body: "Sen hördes stegen. Tunga. Det karakteristiska ljudet av de spanska höfterna.\nToastie. Chrissy Chris. My boy. Wow, detta står inte ens i texten jag bara säger det från hjärtat. Du är fan sexyyyy. Yeah. Skål för Krabban!\n\nEn Warlock har anslutit till partyt.\n\nWarlocks är opålitliga, självcentrerade, och har en tendens att sacrificea partymedlemmar för personlig vinning. MEN — denna Warlock bär en titel: TOASTMASTER. Hans makt är specifik, begränsad, och exakt så skrämmande som det låter.\n\nHan är inte här för dig. Han är här för Jonna. Han vet att om ritualen ska hålla, måste någon testa dig hårdare än någon annan vågar.",
-    objective: "Välkomna din nya allierade. Hela partyt skålar — en välkomstshot från samtliga. Guild Protocol.",
-    rules: [
-      "Toastmaster's Curse är nu aktiv",
-      "Guildet måste se till att han kommer ikapp drickandet OMGÅENDE"
-    ],
+    perk: "☠️ TOASTMASTER'S CURSE — Warlock Christian har ETT uppdrag/dare som kan komma när som helst. Du kan inte neka. Du kan inte Dispela. Du kan inte Fade.",
+    flavor: "Du kände det, eller hur? Temperaturen sjönk. Ölskummet vibrerade i ditt glas som en seismograf för incoming doom.",
+    body: "Och sen - stegen. Tunga steg. De klapprande spanska höfterna.\n\nEn Warlock har anslutit sig till ditt party.\n\nWarlocks är opålitliga, och har en tendens att sacrificea partymedlemmar för personlig vinning. MEN - denna Warlock kommer med en titel: Toastmaster. Hans makt är specifik, begränsad, och exakt lika skrämmande som det låter.",
+    objective: "Välkomna din nya allierade. Hela partyt ska skåla - en välkomstshot krävs av samtliga. Det är Guild Protocol.",
+    rules: [],
     quote: "You hear a faint whisper: 'I have candy.' You should not follow the Warlock. You will anyway."
   },
   {
-    num: 6, act: "ACT II", actName: "TRIALS OF THE WORTHY",
-    title: "Morning Resurrection",
+    num: 7, act: "ACT II", actName: "THE TRIALS",
+    title: "The Morning Resurrection",
     code: "REZPLZ",
-    difficulty: "DEPENDS ON LAST NIGHT",
+    difficulty: "Depends on last night",
     xp: 50,
     tier: "common",
     boss: null,
-    flavor: "Solen stiger. Din mana bar är tom. Din health bar flimrar rött.",
-    body: "Det finns en ironi här. Du, en HEALER, som inte kan heala sig själv. Hela din karriär har du stått bakom andra och hållit dem vid liv. Kastat Renew på Warriors som rushat in. Desperate-castat Flash Heal på Mages som stått i AoE:n IGEN.\n\nOch nu ligger du här. I en säng du knappt minns. Med en smak i munnen som antyder att du åt något som inte borde existera.\n\nMen Jonna väntar. Hemma. I framtiden. Och en Priest som faller idag blir aldrig bunden till henne imorgon. En Priest FALLER INTE. En Priest RESER SIG.",
-    objective: "Res dig. Hitta frukost. Överlev den. Hydra dig som ditt liv hänger på det — för det gör det.",
+    flavor: "Solen stiger. Din mana bar är tom. Din health bar flimrar i rött.",
+    body: "Det finns en ironisk skönhet i det här: du, en HEALER, som inte kan heala dig själv. Hela din karriär har du stått bakom andra och hållit dem vid liv. Du har kastat Renew på Warriors som rushat in utan plan. Du har desperatcastat Flash Heal på Mages som stått i AoE:n IGEN.\n\nOch nu ligger du här. I en säng du knappt minns att du la dig i. Med en smak i munnen som antyder att du åt något som inte borde existera.\n\nMen en Priest faller inte. En Priest RESER SIG.",
+    objective: "Res dig. Hitta frukost. Överlev den.",
     rules: [
-      "Fråga Philip om \"the magic potion\"",
-      "+10 XP per glas vatten du dricker före kaffe"
+      "+25 XP om du är FÖRST upp och väcker resten av partyt"
     ],
-    quote: "You are not prepared. — Illidan, som aldrig behövde hantera hotellfrukost med hangover."
+    quote: "You are not prepared. — Illidan, som aldrig behövde hantera en hotellfrukost med hangover."
   },
   {
-    num: 7, act: "ACT II", actName: "TRIALS OF THE WORTHY",
+    num: 8, act: "ACT II", actName: "THE TRIALS",
     title: "The Trial of the Unknown",
     code: "SHADOW",
     difficulty: "[REDACTED]",
     xp: 200,
     tier: "epic",
     boss: { name: "The Unknown Trial", hp: 200, flavor: "Två prövningar. Båda testar om du förtjänar att stå bredvid Jonna." },
-    flavor: "Du har healat. Buffat. Stått i bakre raden. Idag blir du DPS.",
-    body: "*** REDACTED ***\n\n*** REDACTED ***\n\n*** REDACTED ***\n\n*** REDACTED ***",
-    objective: "*** REDACTED ***",
-    rules: ["◆", "Ingen rage-quit. Ingen AFK. Inga undantag."],
+    flavor: "Du har healat. Du har buffat. Du har stått i bakre raden. Idag blir du DPS.",
+    body: "Det är dags för din första raid. Den kommer kräva både strategi, ledarskap, våld och en hel del tur.",
+    objective: "Genomför alla prövningarna. Detaljer avslöjas on site. Lita på din Raid Leader.",
+    rules: [
+      "Bonusar och straff avslöjas on site"
+    ],
     quote: "Switching spec from Holy to Shadow. Please wait... please wait..."
   },
   {
-    num: 8, act: "ACT II", actName: "TRIALS OF THE WORTHY",
-    title: "The Island Grind",
-    code: "GRIND",
-    difficulty: "FARM",
+    num: 9, act: "ACT II", actName: "THE TRIALS",
+    title: "The Market of a Thousand Flavors",
+    code: "OMNOM",
+    difficulty: "Medium (your stomach may disagree)",
     xp: 100,
     tier: "rare",
     boss: null,
-    perk: "🍻 CHILL BUFF — Det här är inte ett test. Det är en paus. Party XP delas ut passivt för varje timme vi hänger. Inga krav, inga straff — bara att vara här.",
-    flavor: "Solen står rätt. Havsvinden är lätt. Ingen rusar någonstans.",
-    body: "En dag utan ett mission. En dag som söndag är till för. Hangars, lador, containrar, rök i luften.\n\nInga objectives. Ingen formation. Ingen Raid Leader som tjatar på tempo. Bara partyt, maten, drickan — och tid. Tid att sitta. Tid att prata. Tid att ingenting.\n\nDet är här du förstår varför vi är här. Inte för att pröva dig. För att vara bredvid dig innan du blir någon annans först prio.",
-    objective: "Ingen. Lägg undan din mental checklist.",
-    rules: [
-      "Inga referenser till den jävla libanesiska burgaren i hötorgshallen. −5000 XP",
-      "Critical träff: Få/köp merch från något ställe → +500 XP"
-    ],
-    quote: "No grind today. Just vibes."
+    flavor: "Lukterna blandas med havsvind. Röster ropar på språk du inte förstår. Eld flammar från riktningar du inte förväntar dig.",
+    body: "Din quest har fört dig till en handelskvarterszon — ett Merchant Quarter — där mästare från jordens alla hörn samlats för att erbjuda saker din mage aldrig bett om men ditt hjärta inte kan motstå.\n\nDet här är en quest om TILLIT. Du har tillbringat hela ditt liv med att välja tryggt. Healers gör det — ni väljer det säkra, det beprövade. Men ibland, Priest, måste du välja det okända.",
+    objective: "Free-for-all",
+    rules: [],
+    quote: "Cooking skill increased to 376. But at what cost?"
   },
   {
-    num: 9, act: "ACT II", actName: "TRIALS OF THE WORTHY",
-    title: "Reinforcements from the Eastern Kingdoms",
-    code: "LFGMORE",
-    difficulty: "EMOTIONAL",
-    xp: 150,
-    tier: "epic",
-    boss: null,
-    flavor: "Minns du party-rostern? Minns du de tomma platserna?",
-    body: "Hunter: 'Ej lokaliserad. Signal förlorad.'\nShaman: 'Ej lokaliserad. Signal förlorad.'\n\nVi ljög inte. Deras signal VAR förlorad. De befann sig i andra delar av riket, bortom räckhåll. Vi visste inte om de skulle hinna. Vi visste inte om portalen skulle hålla.\n\nMen den höll.\n\nDe är här nu. Din Hunter och din Shaman. De korsade länder och tidszoner för att stå vid din sida i kampanjens avgörande fas. För att Jonna förtjänar att du står där med ett komplett party. Inte ett halvt. Inte sju av nio. Nio.\n\nPartyt är nu at FULL STRENGTH. Och det är exakt vad du kommer att behöva.",
-    objective: "Välkomna dina förlorade allierade med proper Guild Greeting: en gruppshot, alla nio. Raid Leader räknar ner.",
-    rules: [
-      "Raid difficulty ökar härifrån",
-      "Alla nio måste vara med i shot:en. Ingen fusk-sprite."
-    ],
-    quote: "LFG complete. Nine souls. One destiny. Zero excuses."
-  },
-  {
-    num: 10, act: "ACT II", actName: "TRIALS OF THE WORTHY",
-    title: "Final Feast Before the Bond",
+    num: 10, act: "ACT II", actName: "THE TRIALS",
+    title: "The Final Feast Before the Eternal Bond",
     code: "BONFIRE",
-    difficulty: "LEGENDARY",
+    difficulty: "Legendary",
     xp: 300,
     tier: "legendary",
     boss: { name: "The Last Night Unbound", hp: 300, flavor: "Imorgon binds du till Jonna. Ikväll är den sista kvällen som din själ är din egen." },
-    perk: "🔥 PRIEST'S LAST COMMAND — Du får ge ETT uppdrag till valfri partymedlem. Vad som helst. Ikväll. De kan inte neka. Välj med vishet — denna power är över vid soluppgången.",
+    perk: "🔥 PRIEST'S LAST COMMAND — Du får ge ETT uppdrag till valfri partymedlem. Vad som helst. Ikväll. De kan inte neka.",
     flavor: "Det här är det, Priest. Din sista kväll som obunden.",
-    body: "Imorgon börjar resan hem. Efter det — The Eternal Bond. Jonna väntar. Resten av ditt liv väntar.\n\nMen ikväll sitter du vid ett bord med åtta människor som reste till ett annat land för att fira DIG. Åtta liv med egna jobb, egna planer, egna problem. De valde att vara HÄR. Med DIG. För att de tror på det du och Jonna ska göra.\n\nDet här är inte 'kul med grabbarna.' Det här är ett guild som säger: vi ser dig. Vi tror på dig. Vi skickar dig vidare till Jonna med hedern intakt. På riktigt.\n\nLyssna. Ta emot. Och när tiden är rätt — ge tillbaka.",
-    objective: "Lyssna på talen. Tacka. Skåla. När det är din tur att tala om Jonna: gör det så att bordet gråter.",
+    body: "Imorgon börjar resan hem, och efter det — The Eternal Bond. Jonna väntar. Resten av ditt liv väntar.\n\nMen ikväll sitter du vid ett bord med åtta människor som reste till ett annat land för att fira DIG. Åtta helt separata liv med egna jobb, egna planer, egna problem. Och de valde att vara HÄR. Med DIG.\n\nDet är inte 'kul med grabbarna.' Det är ett guild som säger: du betyder något för oss. På riktigt.",
+    objective: "Enjoy!",
     rules: [
-      "+25 XP per tal som delas av en partymedlem",
-      "+25 XP om du blir synbart rörd",
-      "+50 XP om du gråter. Healers som gråter i raid är inte svaga. De är mänskliga.",
-      "+100 XP om Jonnas namn sägs med den respekt det förtjänar"
+      "Varje skål MÅSTE avslutas med antingen 'For the Horde' eller 'For Jonna'",
+      "+25 XP om du håller tal till en partymedlem",
+      "+25 XP om du blir synbart rörd"
     ],
-    quote: "For the Horde. For the Alliance. For Jonna. For all of it."
+    quote: "For the Horde. For the Alliance. For Jonna."
   },
   {
-    num: 11, act: "ACT III", actName: "RETURN TO JONNA",
-    title: "Hearthstone Home",
+    num: 11, act: "ACT III", actName: "THE RETURN",
+    title: "Hearthstone",
     code: "GG",
-    difficulty: "BITTERSWEET",
+    difficulty: "Bittersweet",
     xp: 0,
     tier: "legendary",
     boss: null,
-    flavor: "Du har klarat det. Kampanjen är slut. Nu börjar The Eternal Bond.",
-    body: "Tre akter. Elva quests. Hundratals XP. Minnen som inte går att Dispela.\n\nDu sov dåligt. Åt för mycket. Drack saker som förmodligen inte var lagliga i ditt hemland. Och du hade det bästa du haft sedan... ja. Sedan sist vi alla var samlade.\n\nNu trycker du på Hearthstone. Du reser hem. Till Jonna.\n\nHon väntar. Hon vet inte exakt vad vi gjorde — och hon behöver inte veta allt. Hon behöver bara veta en sak: du kom hem som en bättre version av dig själv. Värdig The Eternal Bond. Redo att bindas till henne. Permanent. Ingen Dispel. Ingen Fade.\n\nVi är klara här. Gå till henne.",
-    objective: "Packa. Checka ut. Lämna inget bakom dig — varken i rummet eller i hjärtat. Gå hem till Jonna.",
+    flavor: "Du har klarat det.",
+    body: "Tre akter. Elva quests. Hundratals XP. Minnen som inte går att Dispela.\n\nKampanjen är slut. Du sov dåligt, du åt för mycket, du drack saker som förmodligen inte var lagliga i ditt hemland, och du har haft det bästa du haft sedan... ja. Sedan sist vi alla var samlade (aldrig).\n\nNu trycker du på Hearthstone. Du reser hem. Till ditt vanliga liv — fast ingenting är vanligt längre. Jonna väntar. The Eternal Bond väntar.",
+    objective: "Packa ihop. Checka ut. Lämna inget bakom dig — varken i rummet eller i ditt hjärta.",
     rules: [],
-    quote: "You have been disconnected from the server. Reason: Jonna is calling."
+    quote: "You have been disconnected from the server. Reason: real life is calling."
   },
 ];
 
 // ===== SIDE QUESTS — all Jonna-adjacent or party-power =====
 window.SIDE_QUESTS = [
-  { id: "sq1", unlocksAtLevel: 2, type: "CHALLENGE", title: "First Blood", description: "Beställ en dryck utan att kolla menyn. Peka. Säg 'that one.' Ingen ånger. Jonna hade gjort likadant.", xp: 25, code: "YOLO" },
-  { id: "sq2", unlocksAtLevel: 3, type: "DECREE", title: "Law of the Disciple", description: "Inför EN regel som gäller hela guildet i 30 minuter. Regeln får inte kosta pengar. Bryt regeln själv: −50 XP.", xp: 50, code: "MYLAW" },
-  { id: "sq3", unlocksAtLevel: 3, type: "JONNA", title: "Signal to the Bond", description: "Skicka Jonna ett meddelande som innehåller 'eternal bond' utan förklaring. Screenshotta hennes svar. Visa partyt.", xp: 75, code: "JONNA1" },
-  { id: "sq4", unlocksAtLevel: 4, type: "CHALLENGE", title: "Battlecry", description: "Gå fram till en främling och säg 'For the Horde' med full conviction. Bonus om de svarar. Dubbel bonus om de svarar rätt.", xp: 50, code: "LOK" },
-  { id: "sq5", unlocksAtLevel: 5, type: "GRIND", title: "Potion Master", description: "Drick tre shots under kvällen. En ljus. En mörk. En 'varför finns detta.' Rapportera varje till Raid Leader.", xp: 50, code: "3SHOTS" },
-  { id: "sq6", unlocksAtLevel: 5, type: "JONNA", title: "Proof of Life", description: "Ta en selfie med valfri partymedlem. Båda gör 'epic raid victory'-ansiktet. Skicka till Jonna. Inget caption.", xp: 50, code: "SELFIE" },
-  { id: "sq7", unlocksAtLevel: 6, type: "DECREE", title: "Archon's Mandate", description: "Välj en partymedlem. Den personen hämtar din nästa dryck/mat. Ingen förhandling. Ingen återlämning.", xp: 25, code: "FETCH" },
-  { id: "sq8", unlocksAtLevel: 7, type: "GRIND", title: "Bard Mode", description: "Sjung minst 4 rader av valfri låt. Högt nog att minst 3 partymedlemmar hör. Bonus: WoW-relaterad. Dubbel bonus: om det är Jonnas favoritlåt.", xp: 75, code: "BARD" },
-  { id: "sq9", unlocksAtLevel: 8, type: "CHALLENGE", title: "Inspect Element", description: "Ge en ärlig, specifik compliment till varje partymedlem. Inte 'du är cool'. Något specifikt. Alla åtta. Ingen får höra de andras.", xp: 100, code: "INSPECT" },
-  { id: "sq10", unlocksAtLevel: 9, type: "JONNA", title: "Vow Draft", description: "Skriv ner EN mening. Den ska börja med 'Jonna, jag lovar...' och sluta med något sant. Läs upp för partyt. Spara för bröllopet.", xp: 100, code: "VOW" },
+  { id: "sq1", unlocksAtLevel: 2, type: "CHALLENGE", title: "First Blood", description: "Beställ en dryck utan att kolla menyn. Peka och säg 'that one'. Ingen ånger.", xp: 25, code: "YOLO" },
+  { id: "sq2", unlocksAtLevel: 3, type: "GUILD RULE", title: "Decree of the Disciple", description: "Du får införa EN regel som gäller hela guildet i 30 minuter. Regeln kan inte innebära att någon måste spendera pengar.", xp: 50, code: "MYLAW" },
+  { id: "sq3", unlocksAtLevel: 3, type: "GRIND", title: "Reputation Grind: Jonna", description: "Skicka ett meddelande till Jonna som innehåller orden 'eternal bond' utan att förklara varför. Screenshotta hennes svar.", xp: 50, code: "JONNA1" },
+  { id: "sq4", unlocksAtLevel: 4, type: "CHALLENGE", title: "Battlecry", description: "Gå fram till en främling och säg 'For The Horde' med full conviction. Bonuspoäng om de svarar.", xp: 50, code: "LOK" },
+  { id: "sq5", unlocksAtLevel: 5, type: "GRIND", title: "Potion Master", description: "Drick tre olika shots under kvällen. En av varje färg: ljus, mörk, och 'varför finns detta'. Rapportera till Raid Leader.", xp: 50, code: "3SHOTS" },
+  { id: "sq6", unlocksAtLevel: 5, type: "CHALLENGE", title: "Blurred Memories of Destiny", description: "Ta en selfie med valfri partymedlem. Båda måste göra sitt bästa 'epic raid victory'-ansikte.", xp: 25, code: "SELFIE" },
+  { id: "sq7", unlocksAtLevel: 6, type: "GUILD RULE", title: "Archon's Mandate", description: "Välj en partymedlem. Den personen måste hämta dryck/mat åt dig nästa gång gruppen beställer. Ingen förhandling.", xp: 25, code: "FETCH" },
+  { id: "sq8", unlocksAtLevel: 7, type: "GRIND", title: "Bard Mode: Activated", description: "Gå fram till DJ:n och be om att få rappa en 50cent låt. 10.000 XP om du klarar det.", xp: 75, code: "BARD" },
+  { id: "sq9", unlocksAtLevel: 8, type: "CHALLENGE", title: "Inspect Element", description: "Ge en ärlig, ofiltrerad compliment till varje partymedlem. Inte 'du är cool' — något specifikt. Alla åtta.", xp: 100, code: "INSPECT" },
+  { id: "sq10", unlocksAtLevel: 9, type: "GUILD RULE", title: "Exalted Decree", description: "Du får byta namn på en partymedlem för resten av kvällen. Alla MÅSTE använda det nya namnet.", xp: 50, code: "RENAME" },
 ];
 
-// ===== LEVELS + RANKS (synced journey: Unworthy → Bound to Jonna) =====
+// ===== LEVELS + RANKS =====
 window.LEVELS = [
-  { level: 1,  xp: 0,    title: "Acolyte",       rank: "UNWORTHY",              desc: "Jonna skulle inte ens ge dig en second glance." },
-  { level: 2,  xp: 100,  title: "Novice",        rank: "UNBOUND",               desc: "Du existerar. Hon vet inte om det ännu." },
-  { level: 3,  xp: 250,  title: "Disciple",      rank: "SEEN",                  desc: "Hon har noterat dig. Det är allt." },
-  { level: 4,  xp: 400,  title: "Cleric",        rank: "NOTICED",               desc: "Ögonkontakt. 0.3 sekunder. Det räknas." },
-  { level: 5,  xp: 600,  title: "High Priest",   rank: "WORTHY OF A GLANCE",    desc: "Hon ler mot någon. Det kanske är dig." },
-  { level: 6,  xp: 800,  title: "Archon",        rank: "WORTHY OF A WORD",      desc: "Ni har pratat. Det gick okej." },
-  { level: 7,  xp: 1000, title: "Prophet",       rank: "WORTHY OF A DATE",      desc: "Reservation för två. Inget fusk." },
-  { level: 8,  xp: 1250, title: "Ascendant",     rank: "BONDABLE",              desc: "Själ detekterad. Kompatibel. Scanning complete." },
-  { level: 9,  xp: 1500, title: "Exalted",       rank: "RING-BEARER",           desc: "Du köpte ringen. Vägen tillbaka är stängd." },
-  { level: 10, xp: 1800, title: "Eternal",       rank: "BOUND TO JONNA",        desc: "The Eternal Bond. Permanent. No Dispel. No Fade." },
+  { level: 1,  xp: 0,    title: "Acolyte",    rank: "Unworthy",               desc: "Inte ens din mamma är imponerad." },
+  { level: 2,  xp: 100,  title: "Novice",     rank: "Barely Tolerated",       desc: "Guildet accepterar dig. Motvilligt." },
+  { level: 3,  xp: 250,  title: "Disciple",   rank: "Questionably Adequate",  desc: "Du existerar. Det är en start." },
+  { level: 4,  xp: 400,  title: "Cleric",     rank: "Grudgingly Accepted",    desc: "Ingen är imponerad. Ännu." },
+  { level: 5,  xp: 600,  title: "High Priest",rank: "Almost Decent",          desc: "Svagt. Men märkbart." },
+  { level: 6,  xp: 800,  title: "Archon",     rank: "Shows Promise",          desc: "Det rör sig... kanske." },
+  { level: 7,  xp: 1000, title: "Prophet",    rank: "Respectable",            desc: "Jonna nickar. Osäkert, men ändå." },
+  { level: 8,  xp: 1250, title: "Ascendant",  rank: "Battle-Hardened",        desc: "Du förtjänar din plats i guildet." },
+  { level: 9,  xp: 1500, title: "Exalted",    rank: "Worthy of Eternal Bond", desc: "Realm First. Inga ord räcker till." },
+  { level: 10, xp: 1800, title: "Eternal",    rank: "BOUND TO JONNA",         desc: "The Eternal Bond. Permanent. No Dispel. No Fade." },
 ];
 
 // ===== PERKS (ability unlocks) =====
 window.PERKS_DATA = [
-  { questNum: 2,  name: "PRIEST'S BLESSING",    desc: "Peka på valfri partymedlem och säg 'Blessing of the Priest.' De MÅSTE köpa en dryck åt dig. EN gång.", icon: "🙏" },
-  { questNum: 3,  name: "HEALER'S PRIVILEGE",   desc: "Du väljer din säng först. Resten håller käften om det.", icon: "🛏️" },
-  { questNum: 5,  name: "TOASTMASTER'S CURSE",  desc: "Warlock Christian kan detonera ETT dare när som helst. Du kan inte neka.", icon: "☠️" },
-  { questNum: 8,  name: "PRIEST'S DECREE",      desc: "Du bestämmer vad minst 2 partymedlemmar äter. Inga protester.", icon: "👑" },
+  { questNum: 2,  name: "PRIEST'S BLESSING",    desc: "Peka på valfri partymedlem och säg 'Blessing of the Priest.' Den personen MÅSTE följa med och hjälpa dig bära. Denna perk gäller endast innan portalen öppnas.", icon: "🙏" },
+  { questNum: 3,  name: "HEALER PRIVILEGE",     desc: "Du får önska vem du vill sova med. Men om din kärleksförklaring inte blir besvarad får du -1400 XP i \"Reputation\".", icon: "🛏️" },
+  { questNum: 6,  name: "TOASTMASTER'S CURSE",  desc: "Warlock Christian kan detonera ETT dare när som helst. Du kan inte neka.", icon: "☠️" },
   { questNum: 10, name: "PRIEST'S LAST COMMAND", desc: "Du får ge ETT uppdrag till valfri partymedlem. Vad som helst.", icon: "🔥" },
 ];
 
 // ===== PARTY =====
 window.PARTY = [
-  { name: "Mauritz",  cls: "Holy Priest",   icon: "✝️", role: "The one bound for Jonna",          hiddenUntilQuest: null, color: "#ffffff" },
-  { name: "Gustaf",   cls: "Paladin",       icon: "⚔️", role: "Raid Leader · Best Man",          hiddenUntilQuest: null, color: "#F58CBA" },
-  { name: "Philip",   cls: "Rogue",         icon: "🗡️", role: "Shadow Operative",                hiddenUntilQuest: null, color: "#FFF569" },
-  { name: "Christian",cls: "Warlock",       icon: "🔥", role: "Toastmaster",                      hiddenUntilQuest: 5,    color: "#9482C9" },
-  { name: "Olof",     cls: "Hunter",        icon: "🏹", role: "Reinforcement · Eastern Kingdom", hiddenUntilQuest: 9,    color: "#AAD372" },
-  { name: "David",    cls: "Shaman",        icon: "🌿", role: "Reinforcement · Eastern Kingdom",  hiddenUntilQuest: 9,    color: "#0070DE" },
-  { name: "Martin W", cls: "Warrior",       icon: "🛡️", role: "Tank",                             hiddenUntilQuest: null, color: "#C79C6E" },
-  { name: "Filip",    cls: "Mage",          icon: "✨", role: "DPS · Arcane",                    hiddenUntilQuest: null, color: "#69CCF0" },
-  { name: "Martin I", cls: "Death Knight",  icon: "💀", role: "Wildcard · Anti-Hero",            hiddenUntilQuest: null, color: "#C41F3B" },
+  { name: "Mauritz",  cls: "Holy Priest",   icon: "✝️", role: "The one who heals must now be healed", hiddenUntilQuest: null, color: "#ffffff" },
+  { name: "Gustaf",   cls: "Paladin",       icon: "⚔️", role: "Raid Leader · Best Man",               hiddenUntilQuest: null, color: "#F58CBA" },
+  { name: "Philip",   cls: "Rogue",         icon: "🗡️", role: "Shadow Operative",                     hiddenUntilQuest: null, color: "#FFF569" },
+  { name: "Christian",cls: "Warlock",       icon: "🔥", role: "Toastmaster",                          hiddenUntilQuest: 6,    color: "#9482C9" },
+  { name: "Olof",     cls: "Hunter",        icon: "🏹", role: "Reinforcement",                        hiddenUntilQuest: 4,    color: "#AAD372" },
+  { name: "David",    cls: "Shaman",        icon: "🌿", role: "Reinforcement",                        hiddenUntilQuest: 4,    color: "#0070DE" },
+  { name: "Martin W", cls: "Warrior",       icon: "🛡️", role: "Tank",                                 hiddenUntilQuest: null, color: "#C79C6E" },
+  { name: "Filip",    cls: "Mage",          icon: "✨", role: "DPS",                                  hiddenUntilQuest: null, color: "#69CCF0" },
+  { name: "Martin I", cls: "Death Knight",  icon: "💀", role: "Wildcard",                             hiddenUntilQuest: null, color: "#C41F3B" },
 ];
 
 // ===== LOOT TABLE — rolled on quest complete =====
-// All loot is Jonna-flavored, silly, diegetic.
 window.LOOT_TABLE = {
   common: [
     { name: "Crumpled Napkin of Regret",           flavor: "+1 WIS · 'Maybe I shouldn't have said that.'" },
@@ -284,8 +276,6 @@ window.RARITY = {
 };
 
 // ===== THEMES — warm amber (Safe) and cool blood-violet (Bold) =====
-// Each is 10 steps from L1 (cold/dim) to L10 (blazing)
-// SAFE — arcane neon → gold → hellfire. Each level gets a SECONDARY color for pops.
 window.THEMES_SAFE = [
   { bg1: "#1c1040", bg2: "#0a0618", accent: "#b8a0ff", second: "#50e0ff", glow: "rgba(184,160,255,0.30)", card: "rgba(24,14,50,0.88)" },
   { bg1: "#1e0e48", bg2: "#0c0620", accent: "#c090ff", second: "#40d8ff", glow: "rgba(192,144,255,0.34)", card: "rgba(28,14,58,0.88)" },
@@ -299,7 +289,6 @@ window.THEMES_SAFE = [
   { bg1: "#500408", bg2: "#200204", accent: "#ff2040", second: "#ffe060", flicker: true, glow: "rgba(255,32,64,0.72)", card: "rgba(68,2,6,0.96)" },
 ];
 
-// BOLD — cool dusk → blood. Cyan/magenta secondary for cyberpunk-esque contrast.
 window.THEMES_BOLD = [
   { bg1: "#0c0a2c", bg2: "#04031c", accent: "#8a98ff", second: "#00e8ff", glow: "rgba(138,152,255,0.30)", card: "rgba(16,12,42,0.90)" },
   { bg1: "#0c0a38", bg2: "#04031e", accent: "#8070ff", second: "#00ffe0", glow: "rgba(128,112,255,0.34)", card: "rgba(16,12,50,0.90)" },
