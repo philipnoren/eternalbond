@@ -2,7 +2,7 @@
 const { useState, useEffect, useCallback, useRef, useMemo } = React;
 
 // ----- storage -----
-const SK = "eternal-bond-v3";
+const SK = "eternal-bond-v4";
 window.ebLoad = async () => {
   try {
     const v = localStorage.getItem(SK);
@@ -11,7 +11,7 @@ window.ebLoad = async () => {
       return { uq: [], csq: [], loot: [], variant: "safe", gc: false, dx: false, bs: 0, bossDmg: {}, muted: false, ...d };
     }
   } catch {}
-  return { uq: [], csq: [], loot: [], variant: "safe", gc: false, dx: false, bs: 0, bossDmg: {}, muted: false };
+  return { uq: [], csq: [], loot: [], variant: "safe", gc: false, dx: false, bs: 0, bossDmg: {}, muted: false, ob: false };
 };
 window.ebSave = async (s) => { try { localStorage.setItem(SK, JSON.stringify(s)); } catch {} };
 
@@ -394,6 +394,256 @@ window.LootOverlay = function LootOverlay({ item, onDismiss }) {
         <div style={{ color: "#5a4a6a", fontSize: "10px", marginTop: "24px", letterSpacing: "2px", fontFamily: "'JetBrains Mono',monospace" }}>— Tap to collect —</div>
       </div>
     </div>
+  );
+};
+
+// ----- Onboarding overlay (first-run intro) -----
+window.OnboardingOverlay = function OnboardingOverlay({ t, onFinish }) {
+  const [step, setStep] = useState(0);
+  const steps = [
+    {
+      badge: "HEED THE CALL",
+      title: "Holy Priest Mauritz",
+      body: "Din guild har sammankallat dig. The Eternal Bond närmar sig — bindandet av din själ. Men först: en sista kampanj. En serie prövningar som testar om du är värdig.",
+      cta: "I HEAR THE CALL",
+    },
+    {
+      badge: "HOW IT WORKS",
+      title: "Codes · XP · Levels",
+      body: "Varje quest låses upp med en kod som din Raid Leader släpper vid rätt tillfälle. Klara quests ger XP. XP ger levels. Levels låser upp sidequests, perks och loot.",
+      cta: "UNDERSTOOD",
+    },
+    {
+      badge: "YOUR GUILD AWAITS",
+      title: "Nine Souls. One Destiny.",
+      body: "Delar av ditt party syns redan. Andra är Ej lokaliserade. Signal förlorad. De avslöjar sig när kampanjen kräver det.",
+      cta: "LFG",
+    },
+    {
+      badge: "BEGIN THE CAMPAIGN",
+      title: "The Map Awaits",
+      body: "Din karta visar vägen. Noder som lyser är redo. Noder i dimma väntar på rätt kod. Destinationen är hemlig — följ bara stigen.",
+      cta: "START",
+    },
+  ];
+  const s = steps[step];
+  const last = step === steps.length - 1;
+  const next = () => { if (last) onFinish(); else setStep(step + 1); };
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-6" onClick={next}
+      style={{ background: `radial-gradient(circle at 50% 40%, ${t.bg1}, #04020a 80%)` }}>
+      <div className="absolute inset-0 pointer-events-none" style={{
+        background: `radial-gradient(circle at 50% 40%, ${t.accent}22, transparent 60%)`,
+        animation: "radialPulse 3s ease-out infinite",
+      }} />
+      <div className="text-center max-w-md relative" style={{ animation: "perkReveal 0.6s forwards" }} key={step}>
+        <div style={{ color: t.accent, fontSize: "10px", letterSpacing: "6px", marginBottom: "18px", fontFamily: "'JetBrains Mono',monospace", fontWeight: 700 }}>◆ {s.badge} ◆</div>
+        <div style={{
+          fontFamily: "'Cinzel',serif", fontSize: "30px", fontWeight: 900, lineHeight: 1.15,
+          background: `linear-gradient(90deg, ${t.accent}88, ${t.accent}, #fff, ${t.accent}, ${t.accent}88)`,
+          backgroundSize: "300% auto", backgroundClip: "text", WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent", animation: "shimmer 3s linear infinite", marginBottom: "20px", letterSpacing: "1px",
+        }}>{s.title}</div>
+        <div className="rounded-lg p-4 mb-6" style={{ background: "rgba(10,6,18,0.7)", border: `1px solid ${t.accent}44`, color: "#d4c8b0", fontSize: "14px", lineHeight: 1.65 }}>
+          {s.body}
+        </div>
+        <button onClick={(e) => { e.stopPropagation(); next(); }}
+          className="px-6 py-3 rounded text-xs font-black tracking-widest"
+          style={{ background: `linear-gradient(135deg, ${t.accent}cc, ${t.accent})`, color: "#0a0508", fontFamily: "'Cinzel',serif", letterSpacing: "3px", boxShadow: `0 0 20px ${t.glow}` }}>
+          {s.cta}
+        </button>
+        <div className="flex items-center justify-center gap-2 mt-6">
+          {steps.map((_, i) => (
+            <div key={i} style={{
+              width: i === step ? "24px" : "6px", height: "6px", borderRadius: "3px",
+              background: i <= step ? t.accent : "rgba(120,100,160,0.25)",
+              transition: "width 0.3s",
+            }} />
+          ))}
+        </div>
+        <div style={{ color: "#5a4a6a", fontSize: "10px", marginTop: "16px", letterSpacing: "2px", fontFamily: "'JetBrains Mono',monospace" }}>— Tap anywhere to continue —</div>
+      </div>
+    </div>
+  );
+};
+
+// ----- Map view (fog of war quest map) -----
+window.MapView = function MapView({ quests, unlocked, t, muted, onUnlock, onOpenQuest }) {
+  const unlockedSet = useMemo(() => new Set(unlocked), [unlocked]);
+  const nextNum = useMemo(() => {
+    for (const q of quests) if (!unlockedSet.has(q.num)) return q.num;
+    return null;
+  }, [quests, unlockedSet]);
+
+  const [active, setActive] = useState(null);
+  const activeQ = active != null ? quests.find(q => q.num === active) : null;
+
+  const stateFor = (q) => {
+    if (unlockedSet.has(q.num)) return "unlocked";
+    if (q.num === nextNum) return "next";
+    return "fog";
+  };
+
+  // Build winding path through all nodes
+  const pathD = quests.map((q, i) => {
+    const prev = quests[i - 1];
+    if (!prev) return `M ${q.mapPos.x} ${q.mapPos.y}`;
+    const cx = (prev.mapPos.x + q.mapPos.x) / 2 + (i % 2 === 0 ? 6 : -6);
+    const cy = (prev.mapPos.y + q.mapPos.y) / 2 + (i % 2 === 0 ? -4 : 4);
+    return `Q ${cx} ${cy} ${q.mapPos.x} ${q.mapPos.y}`;
+  }).join(" ");
+
+  return (
+    <div className="relative rounded-lg overflow-hidden" style={{
+      background: `linear-gradient(180deg, ${t.bg1}, ${t.bg2})`,
+      border: `1px solid ${t.accent}33`,
+      boxShadow: `0 0 30px ${t.glow}`,
+      aspectRatio: "3 / 4",
+    }}>
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" width="100%" height="100%" style={{ display: "block" }}>
+        {/* regions */}
+        <defs>
+          <radialGradient id="sea" cx="30%" cy="85%" r="60%">
+            <stop offset="0%" stopColor={t.second} stopOpacity="0.25" />
+            <stop offset="100%" stopColor="#02020a" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="forest" cx="25%" cy="55%" r="35%">
+            <stop offset="0%" stopColor="#2a5a3a" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="#02020a" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="mountain" cx="70%" cy="30%" r="45%">
+            <stop offset="0%" stopColor="#4a3a5a" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="#02020a" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="city" cx="86%" cy="8%" r="18%">
+            <stop offset="0%" stopColor={t.accent} stopOpacity="0.45" />
+            <stop offset="100%" stopColor="#02020a" stopOpacity="0" />
+          </radialGradient>
+          <filter id="fog">
+            <feGaussianBlur stdDeviation="1.2" />
+          </filter>
+        </defs>
+        <rect x="0" y="0" width="100" height="100" fill="url(#sea)" />
+        <rect x="0" y="0" width="100" height="100" fill="url(#forest)" />
+        <rect x="0" y="0" width="100" height="100" fill="url(#mountain)" />
+        <rect x="0" y="0" width="100" height="100" fill="url(#city)" />
+
+        {/* coastline suggestion */}
+        <path d="M 0 92 Q 15 86 30 88 T 60 84 T 100 80 L 100 100 L 0 100 Z"
+          fill={t.second} fillOpacity="0.08" stroke={t.second} strokeOpacity="0.15" strokeWidth="0.2" vectorEffect="non-scaling-stroke" />
+
+        {/* winding path */}
+        <path d={pathD} fill="none" stroke={t.accent} strokeOpacity="0.35" strokeWidth="0.6"
+          strokeDasharray="1.4 1" vectorEffect="non-scaling-stroke" />
+      </svg>
+
+      {/* LUNDINHOLD stamp */}
+      <div className="absolute" style={{ left: "60%", top: "2%", width: "38%", textAlign: "center", pointerEvents: "none" }}>
+        <div style={{
+          color: t.accent, fontFamily: "'Cinzel',serif", fontSize: "11px", fontWeight: 900,
+          letterSpacing: "3px", textShadow: `0 0 10px ${t.glow}`,
+          border: `1px solid ${t.accent}66`, padding: "3px 6px", background: "rgba(10,6,18,0.55)",
+          transform: "rotate(-6deg)", display: "inline-block",
+        }}>⚑ LUNDINHOLD</div>
+      </div>
+
+      {/* nodes */}
+      {quests.map(q => {
+        const st = stateFor(q);
+        return (
+          <MapNode key={q.num} q={q} state={st} t={t}
+            onClick={() => {
+              if (st === "fog") return;
+              if (!muted) SFX.click();
+              setActive(q.num);
+            }} />
+        );
+      })}
+
+      {/* popover */}
+      {activeQ && (
+        <div className="absolute inset-0 flex items-end" style={{ background: "rgba(0,0,0,0.55)" }} onClick={() => setActive(null)}>
+          <div className="w-full p-4" onClick={e => e.stopPropagation()} style={{
+            background: `linear-gradient(180deg, rgba(10,6,18,0.95), ${t.bg2})`,
+            borderTop: `1px solid ${t.accent}66`,
+            animation: "perkReveal 0.3s forwards",
+          }}>
+            {stateFor(activeQ) === "unlocked" ? (
+              <>
+                <div style={{ color: t.accent, fontSize: "9px", letterSpacing: "2px", fontWeight: 700, fontFamily: "'JetBrains Mono',monospace" }}>
+                  {activeQ.act} · {activeQ.actName}
+                </div>
+                <div style={{ color: t.accent, fontFamily: "'Cinzel',serif", fontSize: "18px", fontWeight: 900, marginTop: "4px" }}>
+                  {String(activeQ.num).padStart(2, "0")} · {activeQ.title}
+                </div>
+                <div style={{ color: "#b8a88a", fontSize: "12px", fontStyle: "italic", lineHeight: 1.5, marginTop: "6px" }}>
+                  {activeQ.flavor}
+                </div>
+                <button onClick={() => { onOpenQuest(activeQ.num); setActive(null); }}
+                  className="mt-3 px-3 py-2 rounded text-xs font-black tracking-widest"
+                  style={{ background: `${t.accent}22`, border: `1px solid ${t.accent}`, color: t.accent, fontFamily: "'Cinzel',serif" }}>
+                  OPEN QUEST
+                </button>
+              </>
+            ) : (
+              <>
+                <div style={{ color: "#8a7a9a", fontSize: "9px", letterSpacing: "2px", fontWeight: 700, fontFamily: "'JetBrains Mono',monospace" }}>
+                  ??? · UNKNOWN
+                </div>
+                <div style={{ color: "#d4c8b0", fontFamily: "'Cinzel',serif", fontSize: "18px", fontWeight: 900, marginTop: "4px" }}>
+                  Sealed Quest
+                </div>
+                <div style={{ color: "#8a7a9a", fontSize: "12px", fontStyle: "italic", lineHeight: 1.5, marginTop: "6px" }}>
+                  En kod krävs för att avslöja denna quest. Vänta på Raid Leader.
+                </div>
+                <CodeInput code={activeQ.code} muted={muted} t={t}
+                  onOk={() => { onUnlock(activeQ.num); setActive(null); }} />
+              </>
+            )}
+            <button onClick={() => setActive(null)}
+              className="mt-3 px-2 py-1 text-xs tracking-widest"
+              style={{ color: "#8a7a9a", fontFamily: "'JetBrains Mono',monospace" }}>
+              ✕ CLOSE
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ----- Map node (single node on the map) -----
+window.MapNode = function MapNode({ q, state, t, onClick }) {
+  const isUnlocked = state === "unlocked";
+  const isNext = state === "next";
+  const isFog = state === "fog";
+  const size = isUnlocked ? 36 : isNext ? 32 : 28;
+  return (
+    <button onClick={onClick}
+      disabled={isFog}
+      style={{
+        position: "absolute",
+        left: `calc(${q.mapPos.x}% - ${size/2}px)`,
+        top: `calc(${q.mapPos.y}% - ${size/2}px)`,
+        width: size + "px", height: size + "px",
+        borderRadius: "50%",
+        background: isUnlocked
+          ? `radial-gradient(circle, ${t.accent}, ${t.accent}88)`
+          : isNext
+            ? `radial-gradient(circle, #2a1a3a, #0a0510)`
+            : `radial-gradient(circle, #120820, #05020a)`,
+        border: isUnlocked ? `2px solid ${t.accent}` : isNext ? `1.5px solid ${t.accent}66` : `1px solid rgba(80,60,120,0.2)`,
+        boxShadow: isUnlocked ? `0 0 14px ${t.glow}` : "none",
+        opacity: isFog ? 0.3 : 1,
+        filter: isFog ? "blur(1.5px)" : "none",
+        color: isUnlocked ? "#0a0508" : "#8a7a9a",
+        fontFamily: "'Cinzel',serif", fontSize: "11px", fontWeight: 900,
+        cursor: isFog ? "default" : "pointer",
+        transition: "transform 0.2s",
+        animation: isNext ? "mapPulse 2s ease-in-out infinite" : undefined,
+      }}>
+      {isUnlocked ? String(q.num).padStart(2, "0") : isNext ? "?" : ""}
+    </button>
   );
 };
 

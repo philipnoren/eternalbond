@@ -2,9 +2,10 @@
 const { useState: useSt, useEffect: useEf, useCallback: useCb, useRef: useRf, useMemo: useMe } = React;
 
 function App() {
-  const [s, setS] = useSt({ uq: [], csq: [], loot: [], variant: "safe", gc: false, dx: false, bs: 0, bossDmg: {}, muted: false });
+  const [s, setS] = useSt({ uq: [], csq: [], loot: [], variant: "safe", gc: false, dx: false, bs: 0, bossDmg: {}, muted: false, ob: false });
   const [loading, setLoading] = useSt(true);
-  const [tab, setTab] = useSt("quests");
+  const [tab, setTab] = useSt("map");
+  const [openQuest, setOpenQuest] = useSt(null);
   const [lua, setLua] = useSt(null);
   const [pua, setPua] = useSt(null);
   const [lootUp, setLootUp] = useSt(null);
@@ -199,8 +200,10 @@ function App() {
 @keyframes perkIconPop{0%{transform:scale(0)}30%{transform:scale(1.3)}60%{transform:scale(0.9)}100%{transform:scale(1)}}
 @keyframes bossPulse{0%{background-position:0% 50%}100%{background-position:200% 50%}}
 @keyframes borderShift{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+@keyframes mapPulse{0%,100%{box-shadow:0 0 0 0 currentColor;transform:scale(1)}50%{box-shadow:0 0 0 6px transparent;transform:scale(1.08)}}
       `}</style>
 
+      {!s.ob && <OnboardingOverlay t={t} onFinish={() => { const ns = { ...s, ob: true }; setS(ns); ebSave(ns); }} />}
       {lua && <LevelUpOverlay lvl={lua} t={t} onDismiss={dismissLua} />}
       {pua && <PerkOverlay perk={pua} t={t} onDismiss={dismissPua} />}
       {lootUp && <LootOverlay item={lootUp} onDismiss={dismissLoot} />}
@@ -229,7 +232,7 @@ function App() {
             Bind · or · break.
           </div>
           <div style={{ color: "#6a5a7a", fontSize: "10px", marginTop: "4px", fontFamily: "'JetBrains Mono',monospace", letterSpacing: "1px" }}>
-            MAURITZ ⚭ JONNA · THE LANDS BEYOND · APRIL 2026
+            MAURITZ ⚭ JONNA · LUNDINHOLD · APRIL 2026
           </div>
         </div>
 
@@ -297,8 +300,8 @@ function App() {
           </div>
 
           <div className="flex justify-between mt-2" style={{ fontSize: "10px", color: "#7a6a8a", fontFamily: "'JetBrains Mono',monospace", letterSpacing: "1px" }}>
-            <span>{s.uq.length}/{QUESTS.length} QUESTS</span>
-            <span>{s.csq.length}/{SIDE_QUESTS.length} SIDE</span>
+            <span>{s.uq.length} QUESTS</span>
+            <span>{s.csq.length} SIDE</span>
             <span>{(s.loot || []).length} LOOT</span>
           </div>
         </div>
@@ -307,7 +310,7 @@ function App() {
       {/* TABS */}
       <div className="flex px-4 mb-4 gap-1">
         {[
-          { id: "quests", label: "QUESTS" },
+          { id: "map", label: "MAP" },
           { id: "side", label: "SIDE", badge: pendSQ.length || null, badgeColor: "#ff6040" },
           { id: "party", label: "GUILD" },
           { id: "loot", label: "LOOT", badge: (s.loot || []).length || null, badgeColor: t.accent },
@@ -333,10 +336,28 @@ function App() {
 
       {/* CONTENT */}
       <div className="px-4 pb-32">
-        {tab === "quests" && QUESTS.map(q => (
-          <QCard key={q.num} q={q} unlocked={s.uq.includes(q.num)} onUnlock={unlockQ} t={t} muted={s.muted}
-            bossDmg={(s.bossDmg || {})[q.num] || 0} onBossHit={onBossHit} />
-        ))}
+        {tab === "map" && (
+          <>
+            <MapView quests={QUESTS} unlocked={s.uq} t={t} muted={s.muted}
+              onUnlock={unlockQ}
+              onOpenQuest={(n) => setOpenQuest(n)} />
+            {openQuest != null && (() => {
+              const q = QUESTS.find(x => x.num === openQuest);
+              if (!q) return null;
+              return (
+                <div className="mt-4">
+                  <button onClick={() => setOpenQuest(null)}
+                    className="mb-2 px-3 py-1 rounded text-xs tracking-widest"
+                    style={{ color: "#8a7a9a", fontFamily: "'JetBrains Mono',monospace", border: "1px solid rgba(120,100,160,0.2)" }}>
+                    ← BACK TO MAP
+                  </button>
+                  <QCard q={q} unlocked={s.uq.includes(q.num)} onUnlock={unlockQ} t={t} muted={s.muted}
+                    bossDmg={(s.bossDmg || {})[q.num] || 0} onBossHit={onBossHit} />
+                </div>
+              );
+            })()}
+          </>
+        )}
 
         {tab === "side" && (
           avSQ.length === 0 ? (
@@ -368,7 +389,7 @@ function App() {
         {tab === "party" && (
           <div className="space-y-2">
             <div className="mb-2" style={{ color: "#8a7a9a", fontSize: "10px", letterSpacing: "2px", fontFamily: "'JetBrains Mono',monospace", fontWeight: 700 }}>
-              ▸ GUILD ROSTER — {PARTY.filter(m => !m.hiddenUntilQuest || s.uq.includes(m.hiddenUntilQuest)).length}/{PARTY.length}
+              ◆ GUILD ROSTER
             </div>
             {PARTY.filter(m => !m.hiddenUntilQuest || s.uq.includes(m.hiddenUntilQuest)).map(m => (
                 <div key={m.name} className="rounded-lg p-3 flex items-center gap-3 card-padding transition-all duration-500" style={{
