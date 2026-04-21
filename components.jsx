@@ -61,6 +61,28 @@ window.rollLoot = (tier, owned = []) => {
   return { ...pick, tier, id: Date.now() + "-" + Math.random().toString(36).slice(2, 7) };
 };
 
+// ----- Member stats (deterministic per-level jitter) -----
+window.memberStats = (m, playerLevel) => {
+  if (m.name === "Mauritz") {
+    const hp = 120 + playerLevel * 40;
+    const primaryVal = 8 + playerLevel * 3;
+    return { level: playerLevel, hp, primary: m.primary || "SPI", primaryVal };
+  }
+  const seed = m.name + ":" + playerLevel;
+  let h = 2166136261;
+  for (let i = 0; i < seed.length; i++) { h ^= seed.charCodeAt(i); h = Math.imul(h, 16777619); }
+  const a = (h >>> 0) % 1000;        // 0..999
+  const b = (h >>> 10) % 1000;
+  const hpJitter = Math.round((a / 999 - 0.5) * (m.baseHp * 0.03) * 2); // ±~3%
+  const pJitter  = Math.round((b / 999 - 0.5) * (m.basePrimary * 0.03) * 2);
+  return {
+    level: m.baseLevel,
+    hp: m.baseHp + hpJitter,
+    primary: m.primary,
+    primaryVal: m.basePrimary + pJitter,
+  };
+};
+
 // ----- Code input -----
 window.CodeInput = function CodeInput({ onOk, code, t, muted }) {
   const [v, setV] = useState("");

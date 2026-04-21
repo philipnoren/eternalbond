@@ -104,7 +104,7 @@ window.QUESTS = [
     xp: 100,
     tier: "rare",
     boss: null,
-    perk: "🎯 SHOTS FIRED — Guildet är komplett. Du får välja vad vi ska shota, en gång. ☠️ TOASTMASTER'S EXTENDED CONTRACT — Christian kan nu detonera ETT dare PER ACT (3 totalt). Du kan inte neka. Du kan inte Dispela. Du kan inte Fade.",
+    perk: "🎯 SHOTS FIRED — Guildet är komplett. Du får välja vad vi ska shota, en gång. ☠️ TOASTMASTER'S CURSE — Christian kan detonera ETT dare PER ACT (3 totalt). Du kan inte neka. Du kan inte Dispela. Du kan inte Fade.",
     flavor: "Du kände det, eller hur? Temperaturen sjönk. Ölskummet vibrerade i ditt glas som en seismograf för incoming doom.",
     body: "Och sen - stegen. Tunga steg. De klapprande spanska höfterna.\n\nEn Warlock har anslutit sig till ditt party.\n\nWarlocks är opålitliga, och har en tendens att sacrificea partymedlemmar för personlig vinning. MEN - denna Warlock kommer med en titel: Toastmaster. Hans makt är specifik, begränsad, och exakt lika skrämmande som det låter.",
     objective: "Välkomna din nya allierade. Hela partyt ska skåla - en välkomstshot krävs av samtliga. Det är Guild Protocol.",
@@ -238,7 +238,7 @@ window.PERKS_DATA = [
   { questNum: 3,  type: "perk",  name: "HEALER PRIVILEGE",     desc: "Du får önska vem du vill sova med. Men om din kärleksförklaring inte blir besvarad får du -1400 XP i \"Reputation\".", icon: "🛏️" },
   { questNum: 5,  type: "curse", name: "CURSE OF THE VINBALLE", desc: "Det är bröllopsnatt och du är för full för att fullborda äktenskapet. För att rädda dig från förbannelsen: genast leta upp en shot och dricka den.", icon: "🍷" },
   { questNum: 6,  type: "perk",  name: "SHOTS FIRED",          desc: "Guildet är komplett. SHOTS FIRED Unlocked. Du får välja vad vi ska shota, en gång.", icon: "🎯" },
-  { questNum: 6,  type: "curse", name: "TOASTMASTER'S EXTENDED CONTRACT", desc: "Christian kan nu detonera ETT dare PER ACT (3 totalt), inte bara en gång. Warlock buffed.", icon: "☠️" },
+  { questNum: 6,  type: "curse", name: "TOASTMASTER'S CURSE", desc: "Christian kan detonera ETT dare PER ACT (3 totalt). Du kan inte neka. Du kan inte Dispela. Du kan inte Fade.", icon: "☠️" },
   { questNum: 7,  type: "perk",  name: "EARLY BIRD",           desc: "Du vaknade tidigt. Early bird rabatt på XP: +10% i 3 timmar!", icon: "💤" },
   { questNum: 10, type: "perk",  name: "PRIEST'S LAST COMMAND", desc: "Du får ge ETT uppdrag till valfri partymedlem. Vad som helst.", icon: "🔥" },
   { questNum: 10, type: "curse", name: "HANGOVER PROPHECY",    desc: "Du VET att du kommer ångra dig imorgon. Enda sättet att häva: drick ett glas vatten nu. Nu.", icon: "🤕" },
@@ -246,15 +246,15 @@ window.PERKS_DATA = [
 
 // ===== PARTY =====
 window.PARTY = [
-  { name: "Mauritz",  cls: "Holy Priest",   icon: "✝️", role: "The one who heals must now be healed", hiddenUntilQuest: null, color: "#ffffff" },
-  { name: "Gustaf",   cls: "Paladin",       icon: "⚔️", role: "Raid Leader · Best Man",               hiddenUntilQuest: null, color: "#F58CBA" },
-  { name: "Philip",   cls: "Rogue",         icon: "🗡️", role: "Shadow Operative",                     hiddenUntilQuest: null, color: "#FFF569" },
-  { name: "Christian",cls: "Warlock",       icon: "🔥", role: "Toastmaster",                          hiddenUntilQuest: 6,    color: "#9482C9" },
-  { name: "Olof",     cls: "Hunter",        icon: "🏹", role: "Reinforcement",                        hiddenUntilQuest: 4,    color: "#AAD372" },
-  { name: "David",    cls: "Shaman",        icon: "🌿", role: "Reinforcement",                        hiddenUntilQuest: 4,    color: "#0070DE" },
-  { name: "Martin W", cls: "Warrior",       icon: "🛡️", role: "Tank",                                 hiddenUntilQuest: null, color: "#C79C6E" },
-  { name: "Filip",    cls: "Mage",          icon: "✨", role: "DPS",                                  hiddenUntilQuest: null, color: "#69CCF0" },
-  { name: "Martin I", cls: "Death Knight",  icon: "💀", role: "Wildcard",                             hiddenUntilQuest: null, color: "#C41F3B" },
+  { name: "Mauritz",  cls: "Holy Priest",   icon: "✝️", role: "The one who heals must now be healed", hiddenUntilQuest: null, color: "#ffffff", primary: "SPI" },
+  { name: "Gustaf",   cls: "Paladin",       icon: "⚔️", role: "Raid Leader · Best Man",               hiddenUntilQuest: null, color: "#F58CBA", baseLevel: 89, baseHp: 6240, primary: "STR", basePrimary: 178 },
+  { name: "Philip",   cls: "Rogue",         icon: "🗡️", role: "Shadow Operative",                     hiddenUntilQuest: null, color: "#FFF569", baseLevel: 87, baseHp: 5420, primary: "AGI", basePrimary: 166 },
+  { name: "Christian",cls: "Warlock",       icon: "🔥", role: "Toastmaster",                          hiddenUntilQuest: 6,    color: "#9482C9", baseLevel: 88, baseHp: 5820, primary: "INT", basePrimary: 172 },
+  { name: "Olof",     cls: "Hunter",        icon: "🏹", role: "Reinforcement",                        hiddenUntilQuest: 4,    color: "#AAD372", baseLevel: 85, baseHp: 5280, primary: "AGI", basePrimary: 159 },
+  { name: "David",    cls: "Shaman",        icon: "🌿", role: "Reinforcement",                        hiddenUntilQuest: 4,    color: "#0070DE", baseLevel: 86, baseHp: 5520, primary: "INT", basePrimary: 163 },
+  { name: "Martin W", cls: "Warrior",       icon: "🛡️", role: "Tank",                                 hiddenUntilQuest: null, color: "#C79C6E", baseLevel: 90, baseHp: 6480, primary: "STR", basePrimary: 184 },
+  { name: "Filip",    cls: "Mage",          icon: "✨", role: "DPS",                                  hiddenUntilQuest: null, color: "#69CCF0", baseLevel: 86, baseHp: 5180, primary: "INT", basePrimary: 169 },
+  { name: "Martin I", cls: "Death Knight",  icon: "💀", role: "Wildcard",                             hiddenUntilQuest: null, color: "#C41F3B", baseLevel: 91, baseHp: 6380, primary: "STR", basePrimary: 181 },
 ];
 
 // ===== LOOT TABLE — rolled on quest complete =====

@@ -369,7 +369,10 @@ function App() {
             <div className="mb-2" style={{ color: "#8a7a9a", fontSize: "10px", letterSpacing: "2px", fontFamily: "'JetBrains Mono',monospace", fontWeight: 700 }}>
               ◆ GUILD ROSTER
             </div>
-            {PARTY.filter(m => !m.hiddenUntilQuest || s.uq.includes(m.hiddenUntilQuest)).map(m => (
+            {PARTY.filter(m => !m.hiddenUntilQuest || s.uq.includes(m.hiddenUntilQuest)).map(m => {
+              const st = memberStats(m, lvl.level);
+              const isMauritz = m.name === "Mauritz";
+              return (
                 <div key={m.name} className="rounded-lg p-3 flex items-center gap-3 card-padding transition-all duration-500" style={{
                   background: `linear-gradient(135deg,${t.card},rgba(16,10,24,0.6))`,
                   border: `1px solid ${m.color || t.accent}55`,
@@ -382,15 +385,26 @@ function App() {
                     <span className="text-xl">{m.icon}</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div style={{ color: m.color || t.accent, fontSize: "14px", fontWeight: 900, fontFamily: "'Cinzel',serif", letterSpacing: "0.5px" }}>
-                      {m.name}
+                    <div className="flex items-baseline gap-2">
+                      <div style={{ color: m.color || t.accent, fontSize: "14px", fontWeight: 900, fontFamily: "'Cinzel',serif", letterSpacing: "0.5px" }}>
+                        {m.name}
+                      </div>
+                      <div style={{ color: isMauritz ? "#ff8040" : "#ffd040", fontSize: "10px", fontFamily: "'JetBrains Mono',monospace", fontWeight: 700, letterSpacing: "1px" }}>
+                        Lv {st.level}
+                      </div>
                     </div>
                     <div style={{ color: "#a8988a", fontSize: "11px", marginTop: "2px", fontFamily: "'JetBrains Mono',monospace", letterSpacing: "0.5px" }}>
                       {`${m.cls.toUpperCase()} · ${m.role}`}
                     </div>
+                    <div style={{ marginTop: "4px", fontSize: "10px", fontFamily: "'JetBrains Mono',monospace", letterSpacing: "0.5px" }}>
+                      <span style={{ color: "#8aff8a" }}>HP {st.hp.toLocaleString()}</span>
+                      <span style={{ color: "#5a4a6a" }}>{"  ·  "}</span>
+                      <span style={{ color: "#b080ff" }}>{st.primary} {st.primaryVal}</span>
+                    </div>
                   </div>
                 </div>
-            ))}
+              );
+            })}
 
             {/* Jonna card — the target */}
             <div className="mt-4 rounded-lg p-4 card-padding relative overflow-hidden" style={{
