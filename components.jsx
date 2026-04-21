@@ -192,7 +192,7 @@ window.QCard = function QCard({ q, unlocked, onUnlock, t, muted, bossDmg, onBoss
             <span style={{ color: "#f0a050", fontSize: "10px", letterSpacing: "1.5px", fontWeight: 700, fontFamily: "'JetBrains Mono',monospace" }}>{q.difficulty}</span>
             <span style={{ color: "#3a2d4a", fontSize: "10px" }}>│</span>
             <span style={{ color: "#8a7a9a", fontSize: "10px", letterSpacing: "1.5px", fontFamily: "'JetBrains Mono',monospace" }}>REWARD:</span>
-            <span style={{ color: t.accent, fontSize: "10px", letterSpacing: "1.5px", fontWeight: 700, fontFamily: "'JetBrains Mono',monospace" }}>+{q.xp} XP</span>
+            <span style={{ color: "#8aff8a", fontSize: "10px", letterSpacing: "1.5px", fontWeight: 700, fontFamily: "'JetBrains Mono',monospace", textShadow: "0 0 6px rgba(138,255,138,0.35)" }}>+{q.xp} XP</span>
           </div>
 
           {/* boss bar */}
@@ -209,21 +209,26 @@ window.QCard = function QCard({ q, unlocked, onUnlock, t, muted, bossDmg, onBoss
           </div>
 
           {/* objective */}
-          <div className="mb-4 rounded p-3" style={{ background: `${t.accent}10`, border: `1px solid ${t.accent}33` }}>
-            <div style={{ color: t.accent, fontSize: "10px", letterSpacing: "2px", fontWeight: 900, marginBottom: "6px", fontFamily: "'JetBrains Mono',monospace" }}>▸ OBJECTIVE</div>
-            <div style={{ color: "#f0e6d0", fontSize: "13px", lineHeight: 1.6, fontWeight: 500 }}>{q.objective}</div>
+          <div className="mb-4 rounded p-3" style={{ background: "rgba(255,176,40,0.08)", border: "1px solid rgba(255,176,40,0.45)", boxShadow: "0 0 14px rgba(255,176,40,0.12)" }}>
+            <div style={{ color: "#ffb830", fontSize: "10px", letterSpacing: "2px", fontWeight: 900, marginBottom: "6px", fontFamily: "'JetBrains Mono',monospace", textShadow: "0 0 8px rgba(255,184,48,0.45)" }}>▸ OBJECTIVE</div>
+            <div style={{ color: "#ffe6b0", fontSize: "13px", lineHeight: 1.6, fontWeight: 500 }}>{q.objective}</div>
           </div>
 
           {/* rules */}
           {q.rules && q.rules.length > 0 && (
             <div className="mb-4">
               <div style={{ color: "#b8a88a", fontSize: "10px", letterSpacing: "2px", fontWeight: 700, marginBottom: "6px", fontFamily: "'JetBrains Mono',monospace" }}>▸ RULES & MODIFIERS</div>
-              {q.rules.map((r, i) => (
-                <div key={i} className="flex gap-2 mb-1.5" style={{ color: r.includes("−") ? "#ff6060" : r.includes("+") ? "#8aff8a" : "#b8a88a", fontSize: "12px", lineHeight: 1.5 }}>
-                  <span style={{ color: t.accent, flexShrink: 0 }}>◆</span>
-                  <span>{r}</span>
-                </div>
-              ))}
+              {q.rules.map((r, i) => {
+                const isNeg = r.includes("−") || r.includes("-");
+                const isPos = r.includes("+");
+                const c = isNeg ? "#ff6060" : isPos ? "#8aff8a" : "#e0d0b0";
+                return (
+                  <div key={i} className="flex gap-2 mb-1.5" style={{ color: c, fontSize: "12px", lineHeight: 1.5 }}>
+                    <span style={{ color: c, flexShrink: 0, textShadow: `0 0 6px ${c}66` }}>◆</span>
+                    <span>{r}</span>
+                  </div>
+                );
+              })}
             </div>
           )}
 
@@ -248,7 +253,7 @@ window.QCard = function QCard({ q, unlocked, onUnlock, t, muted, bossDmg, onBoss
 // ----- Side quest card -----
 window.SQCard = function SQCard({ sq, done, onDone, t, muted }) {
   const [sc, setSc] = useState(false);
-  const tc = { CHALLENGE: "#ff8040", DECREE: "#40a0ff", GRIND: "#b060e0", JONNA: "#ff5080" }[sq.type] || t.accent;
+  const tc = { CHALLENGE: "#ff8040", "GUILD RULE": "#40a0ff", DECREE: "#40a0ff", GRIND: "#b060e0", JONNA: "#ff5080" }[sq.type] || "#c0a040";
   return (
     <div className="mb-2 rounded-lg p-3 card-padding" style={{
       background: done ? "rgba(92,184,92,0.08)" : "rgba(16,10,24,0.75)",
@@ -259,7 +264,7 @@ window.SQCard = function SQCard({ sq, done, onDone, t, muted }) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1.5 flex-wrap">
             <span className="px-1.5 py-0.5 rounded font-black" style={{ background: `${tc}1c`, color: tc, fontSize: "9px", letterSpacing: "1.5px", fontFamily: "'JetBrains Mono',monospace" }}>{sq.type}</span>
-            <span style={{ color: t.accent, fontSize: "10px", fontFamily: "'JetBrains Mono',monospace", fontWeight: 700 }}>+{sq.xp} XP</span>
+            <span style={{ color: "#8aff8a", fontSize: "10px", fontFamily: "'JetBrains Mono',monospace", fontWeight: 700, textShadow: "0 0 6px rgba(138,255,138,0.35)" }}>+{sq.xp} XP</span>
           </div>
           <div style={{ color: done ? "#5cb85c" : tc, fontFamily: "'Cinzel',serif", fontSize: "13px", fontWeight: 700, letterSpacing: "0.3px" }}>{done ? "✓ " : ""}{sq.title}</div>
           <div style={{ color: "#b8a88a", fontSize: "12px", lineHeight: 1.55, marginTop: "4px" }}>{sq.description}</div>
@@ -348,21 +353,25 @@ window.LevelUpOverlay = function LevelUpOverlay({ lvl, t, onDismiss }) {
   );
 };
 
-// ----- Perk overlay -----
+// ----- Perk / curse overlay -----
 window.PerkOverlay = function PerkOverlay({ perk, t, onDismiss }) {
+  const isCurse = perk.type === "curse";
+  const hue = isCurse ? "#ff4050" : "#5cb85c";
+  const hue2 = isCurse ? "#ff8040" : "#8aff8a";
+  const label = isCurse ? "◆ CURSE APPLIED ◆" : "◆ NEW ABILITY ◆";
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={onDismiss} style={{ background: "rgba(0,0,0,0.95)" }}>
       <div className="text-center px-8 max-w-sm" style={{ animation: "perkReveal 0.7s forwards" }}>
-        <div style={{ color: "#5cb85c", fontSize: "10px", letterSpacing: "6px", marginBottom: "16px", fontFamily: "'JetBrains Mono',monospace", fontWeight: 700 }}>◆ NEW ABILITY ◆</div>
-        <div style={{ fontSize: "68px", marginBottom: "12px", animation: "perkIconPop 0.7s 0.3s both", filter: `drop-shadow(0 0 20px ${t.accent})` }}>{perk.icon}</div>
+        <div style={{ color: hue, fontSize: "10px", letterSpacing: "6px", marginBottom: "16px", fontFamily: "'JetBrains Mono',monospace", fontWeight: 700, textShadow: `0 0 10px ${hue}66` }}>{label}</div>
+        <div style={{ fontSize: "68px", marginBottom: "12px", animation: "perkIconPop 0.7s 0.3s both", filter: `drop-shadow(0 0 20px ${hue})` }}>{perk.icon}</div>
         <div style={{
           fontFamily: "'Cinzel',serif", fontSize: "22px", fontWeight: 900,
-          background: `linear-gradient(90deg, ${t.accent}66, ${t.accent}, ${t.accent}cc, ${t.accent}, ${t.accent}66)`,
+          background: `linear-gradient(90deg, ${hue}66, ${hue}, ${hue2}, ${hue}, ${hue}66)`,
           backgroundSize: "300% auto", backgroundClip: "text", WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent", animation: "perkShimmer 2.5s linear infinite",
           marginBottom: "16px", letterSpacing: "1px",
         }}>{perk.name}</div>
-        <div className="rounded-lg p-4" style={{ background: `${t.accent}12`, border: `1px solid ${t.accent}55`, color: "#d4c8b0", fontSize: "13px", lineHeight: 1.6 }}>{perk.desc}</div>
+        <div className="rounded-lg p-4" style={{ background: `${hue}14`, border: `1px solid ${hue}66`, color: "#d4c8b0", fontSize: "13px", lineHeight: 1.6, boxShadow: `0 0 30px ${hue}33` }}>{perk.desc}</div>
         <div style={{ color: "#5a4a6a", fontSize: "10px", marginTop: "22px", letterSpacing: "2px", fontFamily: "'JetBrains Mono',monospace" }}>— Tap to dismiss —</div>
       </div>
     </div>
@@ -415,8 +424,8 @@ window.OnboardingOverlay = function OnboardingOverlay({ t, onFinish }) {
     },
     {
       badge: "YOUR GUILD AWAITS",
-      title: "Nine Souls. One Destiny.",
-      body: "Delar av ditt party syns redan. Andra är Ej lokaliserade. Signal förlorad. De avslöjar sig när kampanjen kräver det.",
+      title: "The Guild Assembles.",
+      body: "Ditt party är inte komplett. Delar av det saknas fortfarande — signaler förlorade, lokalisering okänd. De kan dyka upp. De kan inte. Du får veta när kampanjen kräver det.",
       cta: "LFG",
     },
     {

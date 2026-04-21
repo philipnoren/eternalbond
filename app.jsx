@@ -4,8 +4,7 @@ const { useState: useSt, useEffect: useEf, useCallback: useCb, useRef: useRf, us
 function App() {
   const [s, setS] = useSt({ uq: [], csq: [], loot: [], variant: "safe", gc: false, dx: false, bs: 0, bossDmg: {}, muted: false, ob: false });
   const [loading, setLoading] = useSt(true);
-  const [tab, setTab] = useSt("map");
-  const [openQuest, setOpenQuest] = useSt(null);
+  const [tab, setTab] = useSt("quests");
   const [lua, setLua] = useSt(null);
   const [pua, setPua] = useSt(null);
   const [lootUp, setLootUp] = useSt(null);
@@ -299,10 +298,10 @@ function App() {
             ))}
           </div>
 
-          <div className="flex justify-between mt-2" style={{ fontSize: "10px", color: "#7a6a8a", fontFamily: "'JetBrains Mono',monospace", letterSpacing: "1px" }}>
-            <span>{s.uq.length} QUESTS</span>
-            <span>{s.csq.length} SIDE</span>
-            <span>{(s.loot || []).length} LOOT</span>
+          <div className="flex justify-between mt-2" style={{ fontSize: "10px", fontFamily: "'JetBrains Mono',monospace", letterSpacing: "1px" }}>
+            <span style={{ color: "#8aff8a" }}>✓ {s.uq.length} QUESTS</span>
+            <span style={{ color: "#ffb040" }}>◆ {s.csq.length} SIDE</span>
+            <span style={{ color: "#b080ff" }}>◇ {(s.loot || []).length} LOOT</span>
           </div>
         </div>
       </div>
@@ -310,7 +309,7 @@ function App() {
       {/* TABS */}
       <div className="flex px-4 mb-4 gap-1">
         {[
-          { id: "map", label: "MAP" },
+          { id: "quests", label: "QUESTS" },
           { id: "side", label: "SIDE", badge: pendSQ.length || null, badgeColor: "#ff6040" },
           { id: "party", label: "GUILD" },
           { id: "loot", label: "LOOT", badge: (s.loot || []).length || null, badgeColor: t.accent },
@@ -336,28 +335,10 @@ function App() {
 
       {/* CONTENT */}
       <div className="px-4 pb-32">
-        {tab === "map" && (
-          <>
-            <MapView quests={QUESTS} unlocked={s.uq} t={t} muted={s.muted}
-              onUnlock={unlockQ}
-              onOpenQuest={(n) => setOpenQuest(n)} />
-            {openQuest != null && (() => {
-              const q = QUESTS.find(x => x.num === openQuest);
-              if (!q) return null;
-              return (
-                <div className="mt-4">
-                  <button onClick={() => setOpenQuest(null)}
-                    className="mb-2 px-3 py-1 rounded text-xs tracking-widest"
-                    style={{ color: "#8a7a9a", fontFamily: "'JetBrains Mono',monospace", border: "1px solid rgba(120,100,160,0.2)" }}>
-                    ← BACK TO MAP
-                  </button>
-                  <QCard q={q} unlocked={s.uq.includes(q.num)} onUnlock={unlockQ} t={t} muted={s.muted}
-                    bossDmg={(s.bossDmg || {})[q.num] || 0} onBossHit={onBossHit} />
-                </div>
-              );
-            })()}
-          </>
-        )}
+        {tab === "quests" && QUESTS.map(q => (
+          <QCard key={q.num} q={q} unlocked={s.uq.includes(q.num)} onUnlock={unlockQ} t={t} muted={s.muted}
+            bossDmg={(s.bossDmg || {})[q.num] || 0} onBossHit={onBossHit} />
+        ))}
 
         {tab === "side" && (
           avSQ.length === 0 ? (
