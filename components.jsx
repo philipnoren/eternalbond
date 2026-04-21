@@ -15,6 +15,22 @@ window.ebLoad = async () => {
 };
 window.ebSave = async (s) => { try { localStorage.setItem(SK, JSON.stringify(s)); } catch {} };
 
+// ----- body scroll lock (used by fullscreen overlays) -----
+window.useBodyLock = function useBodyLock() {
+  useEffect(() => {
+    const b = document.body, h = document.documentElement;
+    const prev = { bOv: b.style.overflow, hOv: h.style.overflow, bOb: b.style.overscrollBehavior };
+    b.style.overflow = "hidden";
+    h.style.overflow = "hidden";
+    b.style.overscrollBehavior = "contain";
+    return () => {
+      b.style.overflow = prev.bOv;
+      h.style.overflow = prev.hOv;
+      b.style.overscrollBehavior = prev.bOb;
+    };
+  }, []);
+};
+
 // ----- xp / level -----
 window.calcXP = (s) => {
   const qxp = s.uq.reduce((a, n) => a + (QUESTS.find(q => q.num === n)?.xp || 0), 0);
@@ -376,9 +392,10 @@ window.FireEffect = function FireEffect({ level, variant }) {
 
 // ----- Level up overlay -----
 window.LevelUpOverlay = function LevelUpOverlay({ lvl, t, onDismiss }) {
+  useBodyLock();
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={onDismiss}
-      style={{ background: "rgba(0,0,0,0.94)", overflow: "hidden" }}>
+      style={{ background: "rgba(0,0,0,0.94)", overflow: "hidden", overscrollBehavior: "contain" }}>
       {/* radial pulse */}
       <div className="absolute inset-0" style={{
         background: `radial-gradient(circle at 50% 50%, ${t.accent}30, transparent 60%)`,
@@ -407,12 +424,13 @@ window.LevelUpOverlay = function LevelUpOverlay({ lvl, t, onDismiss }) {
 
 // ----- Perk / curse overlay -----
 window.PerkOverlay = function PerkOverlay({ perk, t, onDismiss }) {
+  useBodyLock();
   const isCurse = perk.type === "curse";
   const hue = isCurse ? "#ff4050" : "#5cb85c";
   const hue2 = isCurse ? "#ff8040" : "#8aff8a";
   const label = isCurse ? "◆ CURSE APPLIED ◆" : "◆ NEW ABILITY ◆";
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={onDismiss} style={{ background: "rgba(0,0,0,0.95)" }}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={onDismiss} style={{ background: "rgba(0,0,0,0.95)", overflow: "hidden", overscrollBehavior: "contain" }}>
       <div className="text-center px-8 max-w-sm" style={{ animation: "perkReveal 0.7s forwards" }}>
         <div style={{ color: hue, fontSize: "10px", letterSpacing: "6px", marginBottom: "16px", fontFamily: "'JetBrains Mono',monospace", fontWeight: 700, textShadow: `0 0 10px ${hue}66` }}>{label}</div>
         <div style={{ fontSize: "68px", marginBottom: "12px", animation: "perkIconPop 0.7s 0.3s both", filter: `drop-shadow(0 0 20px ${hue})` }}>{perk.icon}</div>
@@ -432,9 +450,10 @@ window.PerkOverlay = function PerkOverlay({ perk, t, onDismiss }) {
 
 // ----- Loot overlay -----
 window.LootOverlay = function LootOverlay({ item, onDismiss }) {
+  useBodyLock();
   const r = RARITY[item.tier];
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={onDismiss} style={{ background: "rgba(0,0,0,0.92)" }}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={onDismiss} style={{ background: "rgba(0,0,0,0.92)", overflow: "hidden", overscrollBehavior: "contain" }}>
       <div className="absolute inset-0 pointer-events-none" style={{
         background: `radial-gradient(circle at 50% 50%, ${r.color}30, transparent 55%)`,
         animation: "radialPulse 2s ease-out",
@@ -490,9 +509,10 @@ window.OnboardingOverlay = function OnboardingOverlay({ t, onFinish }) {
   const s = steps[step];
   const last = step === steps.length - 1;
   const next = () => { if (last) onFinish(); else setStep(step + 1); };
+  useBodyLock();
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-6" onClick={next}
-      style={{ background: `radial-gradient(circle at 50% 40%, ${t.bg1}, #04020a 80%)` }}>
+      style={{ background: `radial-gradient(circle at 50% 40%, ${t.bg1}, #04020a 80%)`, overflow: "hidden", overscrollBehavior: "contain" }}>
       <div className="absolute inset-0 pointer-events-none" style={{
         background: `radial-gradient(circle at 50% 40%, ${t.accent}22, transparent 60%)`,
         animation: "radialPulse 3s ease-out infinite",
