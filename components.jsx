@@ -484,7 +484,7 @@ window.OnboardingOverlay = function OnboardingOverlay({ t, onFinish }) {
     {
       badge: "HEED THE CALL",
       title: "Holy Priest Mauritz",
-      body: "Din guild har sammankallat dig. The Eternal Bond närmar sig — bindandet av din själ. Men först: en sista kampanj. En serie prövningar som testar om du är värdig.",
+      body: "The Eternal Bond närmar sig — bindandet av din själ. Men först: en sista kampanj. En serie prövningar som testar om du är värdig.",
       cta: "I HEAR THE CALL",
     },
     {
@@ -494,15 +494,9 @@ window.OnboardingOverlay = function OnboardingOverlay({ t, onFinish }) {
       cta: "UNDERSTOOD",
     },
     {
-      badge: "YOUR GUILD AWAITS",
-      title: "The Guild Assembles.",
-      body: "Ditt party är inte komplett. Delar av det saknas fortfarande — signaler förlorade, lokalisering okänd. De kan dyka upp. De kan inte. Du får veta när kampanjen kräver det.",
-      cta: "LFG",
-    },
-    {
       badge: "BEGIN THE CAMPAIGN",
-      title: "The Map Awaits",
-      body: "Din karta visar vägen. Noder som lyser är redo. Noder i dimma väntar på rätt kod. Destinationen är hemlig — följ bara stigen.",
+      title: "The Path Awaits",
+      body: "Destinationen är hemlig. Vägen visas bara för den som förtjänar den — quest för quest. Följ stigen.",
       cta: "START",
     },
   ];
