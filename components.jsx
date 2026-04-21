@@ -25,10 +25,40 @@ window.calcXP = (s) => {
 window.getLvl = (xp) => LEVELS.reduce((b, l) => xp >= l.xp ? l : b, LEVELS[0]);
 
 // ----- loot rolling -----
-window.rollLoot = (tier) => {
+// Tier progression per quest — common early, rare mid, epic late, legendary finale.
+window.pickLootTierForQuest = (num) => {
+  const tables = {
+    1:  ["common","common","common","common","rare"],
+    2:  ["common","common","common","rare"],
+    3:  ["common","common","rare","rare"],
+    4:  ["rare","rare","common","epic"],
+    5:  ["rare","rare","epic","common"],
+    6:  ["rare","epic","rare","common"],
+    7:  ["epic","rare","epic","common"],
+    8:  ["epic","epic","rare","legendary"],
+    9:  ["epic","epic","rare","legendary"],
+    10: ["legendary","legendary","epic","epic"],
+    11: ["legendary","legendary","epic","legendary"],
+  };
+  const row = tables[num] || ["common"];
+  return row[Math.floor(Math.random() * row.length)];
+};
+
+window.rollLoot = (tier, owned = []) => {
   const pool = LOOT_TABLE[tier] || LOOT_TABLE.common;
-  const item = pool[Math.floor(Math.random() * pool.length)];
-  return { ...item, tier, id: Date.now() + "-" + Math.random().toString(36).slice(2, 7) };
+  const ownedNames = new Set((owned || []).filter(i => !i.repeatable).map(i => i.name));
+  const fresh = pool.filter(i => i.repeatable || !ownedNames.has(i.name));
+  const src = fresh.length ? fresh : pool;
+  // weighted — repeatables land ~3× more often than unique items
+  const weights = src.map(i => i.repeatable ? 3 : 1);
+  const total = weights.reduce((a, b) => a + b, 0);
+  let r = Math.random() * total;
+  let pick = src[0];
+  for (let i = 0; i < src.length; i++) {
+    r -= weights[i];
+    if (r <= 0) { pick = src[i]; break; }
+  }
+  return { ...pick, tier, id: Date.now() + "-" + Math.random().toString(36).slice(2, 7) };
 };
 
 // ----- Code input -----

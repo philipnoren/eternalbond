@@ -69,12 +69,12 @@ window.QUESTS = [
     tier: "epic",
     boss: null,
     flavor: "Minns du party-rostern? Minns du de tomma platserna?",
-    body: "Hunter: \"Ej lokaliserad. Signal förlorad.\"\nShaman: \"Ej lokaliserad. Signal förlorad.\"\n\nVi ljög inte. Deras signal VAR förlorad. De befann sig i andra delar av riket, långt bortom räckhåll. Vi visste inte om de skulle hinna. Vi visste inte om portalen skulle hålla.\n\nMen den höll.\n\nDe är här nu. Din Hunter och din Shaman. De korsade länder och tidszoner för att stå vid din sida i kampanjens avgörande fas. Ditt party är nu vid FULL STRENGTH — och det är precis vad du kommer att behöva.",
-    objective: "Välkomna dina förlorade allierade med en proper Guild Greeting: en gruppshot, alla nio.",
+    body: "Hunter: \"Ej lokaliserad. Signal förlorad.\"\nShaman: \"Ej lokaliserad. Signal förlorad.\"\n\nVi ljög inte. Deras signal VAR förlorad. De befann sig i andra delar av riket, långt bortom räckhåll. Vi visste inte om de skulle hinna. Vi visste inte om portalen skulle hålla.\n\nMen den höll.\n\nDe är här nu. Din Hunter och din Shaman. De korsade länder och tidszoner för att stå vid din sida i kampanjens avgörande fas. Ditt party växer — men det är inte komplett än. Något saknas fortfarande. Någon.",
+    objective: "Välkomna dina förlorade allierade med en proper Guild Greeting: en gruppshot.",
     rules: [
-      "Raid difficulty ökar. Partyt är komplett."
+      "Raid difficulty ökar."
     ],
-    quote: "LFG complete. Nine souls. One destiny. Zero excuses.",
+    quote: "LFG partial. Momentum rising. Zero excuses.",
     mapPos: { x: 40, y: 58 }
   },
   {
@@ -236,8 +236,8 @@ window.LEVELS = [
 window.PERKS_DATA = [
   { questNum: 2,  type: "perk",  name: "PRIEST'S BLESSING",    desc: "Peka på valfri partymedlem och säg 'Blessing of the Priest.' Den personen MÅSTE följa med och hjälpa dig bära. Denna perk gäller endast innan portalen öppnas.", icon: "🙏" },
   { questNum: 3,  type: "perk",  name: "HEALER PRIVILEGE",     desc: "Du får önska vem du vill sova med. Men om din kärleksförklaring inte blir besvarad får du -1400 XP i \"Reputation\".", icon: "🛏️" },
-  { questNum: 4,  type: "perk",  name: "SHOTS FIRED",          desc: "Guildet är komplett. SHOTS FIRED Unlocked. Du får välja vad vi ska shota, en gång.", icon: "🎯" },
   { questNum: 5,  type: "curse", name: "CURSE OF THE VINBALLE", desc: "Det är bröllopsnatt och du är för full för att fullborda äktenskapet. För att rädda dig från förbannelsen: genast leta upp en shot och dricka den.", icon: "🍷" },
+  { questNum: 6,  type: "perk",  name: "SHOTS FIRED",          desc: "Guildet är komplett. SHOTS FIRED Unlocked. Du får välja vad vi ska shota, en gång.", icon: "🎯" },
   { questNum: 6,  type: "curse", name: "TOASTMASTER'S EXTENDED CONTRACT", desc: "Christian kan nu detonera ETT dare PER ACT (3 totalt), inte bara en gång. Warlock buffed.", icon: "☠️" },
   { questNum: 7,  type: "perk",  name: "EARLY BIRD",           desc: "Du vaknade tidigt. Early bird rabatt på XP: +10% i 3 timmar!", icon: "💤" },
   { questNum: 10, type: "perk",  name: "PRIEST'S LAST COMMAND", desc: "Du får ge ETT uppdrag till valfri partymedlem. Vad som helst.", icon: "🔥" },
@@ -260,7 +260,7 @@ window.PARTY = [
 // ===== LOOT TABLE — rolled on quest complete =====
 window.LOOT_TABLE = {
   common: [
-    { name: "Crumpled Napkin of Regret",           flavor: "+1 WIS · 'Maybe I shouldn't have said that.'" },
+    { name: "Common Järpe",                         flavor: "En helt vanlig järpe. Gör ingenting.", repeatable: true },
     { name: "Half-Drunk Mineral Water",             flavor: "+5 HYDRATION · You will need this." },
     { name: "Receipt from the Merchant Quarter",    flavor: "Vintage 2026. Unreadable script." },
     { name: "Pocket Lint of Forgotten Memories",    flavor: "You had something to say. It's gone now." },
@@ -285,7 +285,6 @@ window.LOOT_TABLE = {
   ],
   epic: [
     { name: "Jonna's Phone Number (Verified)",      flavor: "LEGENDARY BOND ITEM · Use once per campaign. Must be used wisely." },
-    { name: "Scroll: 'Why I Chose Her'",             flavor: "+25 CHA · Read aloud when the party least expects it." },
     { name: "Ring-Bearer's Burden",                  flavor: "+30 WIS · Heavy in the pocket. Heavier in the soul." },
     { name: "Toastmaster's Blessing (Partial)",     flavor: "+20 LUCK · Does not stack with the Curse." },
     { name: "Signed Permission from Jonna's Mum",   flavor: "+40 CHA · Extremely rare drop. Extremely powerful." },

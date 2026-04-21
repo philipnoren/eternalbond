@@ -53,31 +53,28 @@ function App() {
     }
   }, []);
 
-  const dropLoot = useCb((tier, ns) => {
-    const it = rollLoot(tier);
-    const ns2 = { ...ns, loot: [...(ns.loot || []), it] };
-    setS(ns2); ebSave(ns2);
-    lootQueue.current.push(it);
-  }, []);
-
   const unlockQ = useCb(async (n) => {
-    const q = QUESTS.find(x => x.num === n);
     const ns = { ...s, uq: [...s.uq, n] };
-    const tier = q?.tier || "common";
-    const it = rollLoot(tier);
+    const tier = pickLootTierForQuest(n);
+    const it = rollLoot(tier, ns.loot || []);
     const ns2 = { ...ns, loot: [...(ns.loot || []), it] };
     setS(ns2); await ebSave(ns2);
     const willLvl = getLvl(calcXP(ns2)).level > plr.current;
-    const perk = PERKS_DATA.find(p => p.questNum === n);
-    // queue order: level → perk → loot
+    const perks = PERKS_DATA.filter(p => p.questNum === n);
+    const hasPerks = perks.length > 0;
+    // queue order: level → perk(s) → loot
     setTimeout(() => {
       chkLvl(ns2);
-      if (perk) {
-        if (willLvl) puaQueue.current.push(perk);
-        else setTimeout(() => setPua(perk), 600);
+      if (hasPerks) {
+        if (willLvl) perks.forEach(p => puaQueue.current.push(p));
+        else {
+          const [first, ...rest] = perks;
+          rest.forEach(p => puaQueue.current.push(p));
+          setTimeout(() => setPua(first), 600);
+        }
       }
       lootQueue.current.push(it);
-      if (!willLvl && !perk) {
+      if (!willLvl && !hasPerks) {
         const nxt = lootQueue.current.shift();
         if (nxt) setTimeout(() => { setLootUp(nxt); if (!s.muted) SFX.loot(nxt.tier); }, 500);
       }
@@ -92,7 +89,7 @@ function App() {
     // small loot chance on side quests
     if (Math.random() < 0.5) {
       const tier = sq.xp >= 75 ? "rare" : "common";
-      const it = rollLoot(tier);
+      const it = rollLoot(tier, ns.loot || []);
       const ns2 = { ...ns, loot: [...(ns.loot || []), it] };
       setS(ns2); await ebSave(ns2);
       setTimeout(() => { setLootUp(it); if (!s.muted) SFX.loot(tier); }, 400);
@@ -111,7 +108,7 @@ function App() {
       setTimeout(() => {
         if (!s.muted) SFX.crit();
         const tier = q.num === 10 ? "legendary" : "epic";
-        const it = rollLoot(tier);
+        const it = rollLoot(tier, ns.loot || []);
         const ns2 = { ...ns, loot: [...(ns.loot || []), it] };
         setS(ns2); ebSave(ns2);
         setLootUp(it);
@@ -521,7 +518,7 @@ function App() {
           <button onClick={() => {
               // add +100 xp via a fake side-quest style tick — we just drop loot and bump
               const ns = { ...s };
-              const it = rollLoot(["common","rare","epic","legendary"][Math.floor(Math.random()*4)]);
+              const it = rollLoot(["common","rare","epic","legendary"][Math.floor(Math.random()*4)], s.loot || []);
               ns.loot = [...(s.loot || []), it];
               setS(ns); ebSave(ns);
               setLootUp(it); if (!s.muted) SFX.loot(it.tier);
