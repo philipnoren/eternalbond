@@ -372,35 +372,60 @@ function App() {
             {PARTY.filter(m => !m.hiddenUntilQuest || s.uq.includes(m.hiddenUntilQuest)).map(m => {
               const st = memberStats(m, lvl.level);
               const isMauritz = m.name === "Mauritz";
+              const mia = m.mia;
+              const borderColor = mia ? "rgba(120,120,140,0.35)" : `${m.color || t.accent}55`;
+              const iconColor = mia ? "#6a6a7a" : (m.color || t.accent);
               return (
                 <div key={m.name} className="rounded-lg p-3 flex items-center gap-3 card-padding transition-all duration-500" style={{
-                  background: `linear-gradient(135deg,${t.card},rgba(16,10,24,0.6))`,
-                  border: `1px solid ${m.color || t.accent}55`,
+                  background: mia
+                    ? "linear-gradient(135deg,rgba(20,20,26,0.8),rgba(10,10,14,0.6))"
+                    : `linear-gradient(135deg,${t.card},rgba(16,10,24,0.6))`,
+                  border: `1px solid ${borderColor}`,
+                  filter: mia ? "grayscale(0.85)" : undefined,
+                  opacity: mia ? 0.55 : 1,
                 }}>
                   <div className="w-12 h-12 rounded flex items-center justify-center shrink-0 overflow-hidden" style={{
-                    background: `${m.color || t.accent}1a`,
-                    border: `2px solid ${(m.color || t.accent)}aa`,
-                    boxShadow: `0 0 12px ${(m.color || t.accent)}44`,
+                    background: mia ? "rgba(40,40,48,0.4)" : `${m.color || t.accent}1a`,
+                    border: `2px solid ${iconColor}${mia ? "" : "aa"}`,
+                    boxShadow: mia ? "none" : `0 0 12px ${(m.color || t.accent)}44`,
                   }}>
                     <span className="text-xl">{m.icon}</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline gap-2">
-                      <div style={{ color: m.color || t.accent, fontSize: "14px", fontWeight: 900, fontFamily: "'Cinzel',serif", letterSpacing: "0.5px" }}>
+                    <div className="flex items-baseline gap-2 flex-wrap">
+                      <div style={{ color: mia ? "#8a8a98" : (m.color || t.accent), fontSize: "14px", fontWeight: 900, fontFamily: "'Cinzel',serif", letterSpacing: "0.5px" }}>
                         {m.name}
                       </div>
-                      <div style={{ color: isMauritz ? "#ff8040" : "#ffd040", fontSize: "10px", fontFamily: "'JetBrains Mono',monospace", fontWeight: 700, letterSpacing: "1px" }}>
-                        Lv {st.level}
-                      </div>
+                      {mia ? (
+                        <div style={{ color: "#ff5060", fontSize: "9px", fontFamily: "'JetBrains Mono',monospace", fontWeight: 900, letterSpacing: "2px", padding: "1px 6px", border: "1px solid rgba(255,80,96,0.5)", borderRadius: "3px", background: "rgba(255,80,96,0.08)" }}>
+                          ◆ MIA
+                        </div>
+                      ) : (
+                        <div style={{ color: isMauritz ? "#ff8040" : "#ffd040", fontSize: "10px", fontFamily: "'JetBrains Mono',monospace", fontWeight: 700, letterSpacing: "1px" }}>
+                          Lv {st.level}
+                        </div>
+                      )}
                     </div>
-                    <div style={{ color: "#a8988a", fontSize: "11px", marginTop: "2px", fontFamily: "'JetBrains Mono',monospace", letterSpacing: "0.5px" }}>
+                    <div style={{ color: mia ? "#6a6a7a" : "#a8988a", fontSize: "11px", marginTop: "2px", fontFamily: "'JetBrains Mono',monospace", letterSpacing: "0.5px" }}>
                       {`${m.cls.toUpperCase()} · ${m.role}`}
                     </div>
-                    <div style={{ marginTop: "4px", fontSize: "10px", fontFamily: "'JetBrains Mono',monospace", letterSpacing: "0.5px" }}>
-                      <span style={{ color: "#8aff8a" }}>HP {st.hp.toLocaleString()}</span>
-                      <span style={{ color: "#5a4a6a" }}>{"  ·  "}</span>
-                      <span style={{ color: "#b080ff" }}>{st.primary} {st.primaryVal}</span>
-                    </div>
+                    {!mia && (
+                      <div style={{ marginTop: "4px", fontSize: "10px", fontFamily: "'JetBrains Mono',monospace", letterSpacing: "0.5px" }}>
+                        <span style={{ color: "#8aff8a" }}>HP {st.hp.toLocaleString()}</span>
+                        <span style={{ color: "#5a4a6a" }}>{"  ·  "}</span>
+                        <span style={{ color: "#b080ff" }}>{st.primary} {st.primaryVal}</span>
+                      </div>
+                    )}
+                    {!isMauritz && m.curse && (
+                      <div style={{ marginTop: "6px", padding: "6px 8px", borderRadius: "4px", background: mia ? "rgba(30,30,38,0.6)" : "rgba(255,64,80,0.08)", border: `1px solid ${mia ? "rgba(120,120,140,0.25)" : "rgba(255,64,80,0.3)"}` }}>
+                        <div style={{ color: mia ? "#7a7a8a" : "#ff8090", fontSize: "9px", fontFamily: "'JetBrains Mono',monospace", fontWeight: 900, letterSpacing: "2px", marginBottom: "2px" }}>
+                          {m.curse.icon} CURSE · {m.curse.name}
+                        </div>
+                        <div style={{ color: mia ? "#7a7a8a" : "#d4b8bc", fontSize: "11px", lineHeight: 1.4, fontStyle: "italic" }}>
+                          {m.curse.desc}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               );
@@ -455,7 +480,7 @@ function App() {
             <div className="mb-4 rounded-lg p-4 card-padding text-center" style={{ background: `linear-gradient(135deg,${t.accent}15,${t.card})`, border: `1px solid ${t.accent}55` }}>
               <div style={{ color: t.accent, fontSize: "11px", letterSpacing: "3px", fontFamily: "'JetBrains Mono',monospace", fontWeight: 700 }}>◆ THE BOND PROGRESSION ◆</div>
               <div style={{ color: "#b8a88a", fontSize: "11px", marginTop: "8px", fontStyle: "italic", lineHeight: 1.5 }}>
-                Resan från Unworthy till Bound.<br />Jonna väntar vid slutet.
+                Du måste bevisa att du är värdig THE ETERNAL BOND.<br />Jonna väntar... men kommer du klara det?
               </div>
             </div>
             {LEVELS.map((l, i) => {

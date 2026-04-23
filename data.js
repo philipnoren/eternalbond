@@ -69,7 +69,7 @@ window.QUESTS = [
     tier: "epic",
     boss: null,
     flavor: "Minns du party-rostern? Minns du de tomma platserna?",
-    body: "Hunter: \"Ej lokaliserad. Signal förlorad.\"\nShaman: \"Ej lokaliserad. Signal förlorad.\"\n\nVi ljög inte. Deras signal VAR förlorad. De befann sig i andra delar av riket, långt bortom räckhåll. Vi visste inte om de skulle hinna. Vi visste inte om portalen skulle hålla.\n\nMen den höll.\n\nDe är här nu. Din Hunter och din Shaman. De korsade länder och tidszoner för att stå vid din sida i kampanjens avgörande fas. Ditt party växer — men det är inte komplett än. Något saknas fortfarande. Någon.",
+    body: "Hunter: \"Ej lokaliserad. Signal förlorad.\"\nShaman: \"Ej lokaliserad. Signal förlorad.\"\n\nVi ljög inte. Deras signal VAR förlorad. De befann sig i andra delar av riket, långt bortom räckhåll. Vi visste inte om de skulle hinna. Vi visste inte om portalen skulle hålla.\n\nMen den höll.\n\nDe är här nu. Din Hunter och din Shaman. De korsade länder och tidszoner för att stå vid din sida i kampanjens avgörande fas.",
     objective: "Välkomna dina förlorade allierade med en proper Guild Greeting: en gruppshot.",
     rules: [
       "Raid difficulty ökar."
@@ -88,10 +88,14 @@ window.QUESTS = [
     flavor: "Gudarna ler mot oss och blessar oss med kött och kall öl.",
     body: "Ditt party eskorterar dig till en grand hall. Vi kan inte avslöja dess namn, det kommer tala för sig självt när dörrarna öppnas.\n\nMen mitt i festens kaos har du en uppgift som ingen healing kan rädda dig från.",
     objective: "Du ska, inför ditt samlade party, berätta om den person du valt att binda din själ till. Inte 'jag älskar Jonna för att hon är snäll' — det kan en NPC säga. Berätta och utelämna inget!",
+    objectives: [
+      "Du ska, inför ditt samlade party, berätta om den person du valt att binda din själ till. Inte 'jag älskar Jonna för att hon är snäll' — det kan en NPC säga. Berätta och utelämna inget!",
+      "Berätta ett fint minne med var och en av oss i din guild. 400 XP om Gurra får en tår i ögat."
+    ],
     rules: [
       "+50 XP om partyt höjer sina bägare och ropar WORTHY",
       "−25 XP varje gång du kollar mobilen under kvällen",
-      "+150 XP om du även berättar hur du känner alla i partyt — detta är första gången vi ses"
+      "+400 XP om Gurra får en tår i ögat"
     ],
     quote: "Leeroy Jenkins drog aldrig in i en feast oförberedd. Okej, det gjorde han. Men du är bättre än Leeroy.",
     mapPos: { x: 32, y: 46 }
@@ -200,36 +204,56 @@ window.QUESTS = [
 
 // ===== SIDE QUESTS — all Jonna-adjacent or party-power =====
 window.SIDE_QUESTS = [
-  { id: "sq1", unlocksAtLevel: 2, type: "CHALLENGE", title: "First Blood", description: "Beställ en dryck utan att kolla menyn. Peka och säg 'that one'. Ingen ånger.", xp: 25, code: "YOLO" },
-  { id: "sq2", unlocksAtLevel: 3, type: "GUILD RULE", title: "Decree of the Disciple", description: "Du får införa EN regel som gäller hela guildet i 30 minuter. Regeln kan inte innebära att någon måste spendera pengar.", xp: 50, code: "MYLAW" },
-  { id: "sq3", unlocksAtLevel: 3, type: "GRIND", title: "Reputation Grind: Jonna", description: "Skicka ett meddelande till Jonna som innehåller orden 'eternal bond' utan att förklara varför. Screenshotta hennes svar.", xp: 50, code: "JONNA1" },
-  { id: "sq4", unlocksAtLevel: 4, type: "CHALLENGE", title: "Battlecry", description: "Gå fram till en främling och säg 'For The Horde' med full conviction. Bonuspoäng om de svarar.", xp: 50, code: "LOK" },
-  { id: "sq5", unlocksAtLevel: 5, type: "GRIND", title: "Potion Master", description: "Drick tre olika shots under kvällen. En av varje färg: ljus, mörk, och 'varför finns detta'. Rapportera till Raid Leader.", xp: 50, code: "3SHOTS" },
-  { id: "sq6", unlocksAtLevel: 5, type: "CHALLENGE", title: "Blurred Memories of Destiny", description: "Ta en selfie med valfri partymedlem. Båda måste göra sitt bästa 'epic raid victory'-ansikte.", xp: 25, code: "SELFIE" },
-  { id: "sq7", unlocksAtLevel: 6, type: "GUILD RULE", title: "Archon's Mandate", description: "Välj en partymedlem. Den personen måste hämta dryck/mat åt dig nästa gång gruppen beställer. Ingen förhandling.", xp: 25, code: "FETCH" },
-  { id: "sq8", unlocksAtLevel: 7, type: "GRIND", title: "Bard Mode: Activated", description: "Gå fram till DJ:n och be om att få rappa en 50cent låt. 10.000 XP om du klarar det.", xp: 75, code: "BARD" },
-  { id: "sq9", unlocksAtLevel: 8, type: "CHALLENGE", title: "Inspect Element", description: "Ge en ärlig, ofiltrerad compliment till varje partymedlem. Inte 'du är cool' — något specifikt. Alla åtta.", xp: 100, code: "INSPECT" },
-  { id: "sq10", unlocksAtLevel: 9, type: "GUILD RULE", title: "Exalted Decree", description: "Du får byta namn på en partymedlem för resten av kvällen. Alla MÅSTE använda det nya namnet.", xp: 50, code: "RENAME" },
+  // ===== User-pinned order — first two =====
+  { id: "sq6",  unlocksAtLevel: 2, type: "CHALLENGE", title: "Blurred Memories of Destiny", description: "Ta en selfie med valfri partymedlem. Båda måste göra sitt bästa 'epic raid victory'-ansikte.", xp: 25, code: "SELFIE" },
+  { id: "sq14", unlocksAtLevel: 2, type: "GRIND",     title: "AFK Detection", description: "Om Raid Leader inte ser dig på 10 minuter = AFK-kick och -50 XP. Undviks genom att vara synlig. +50 XP bonus om du aktivt checkar in.", xp: 50, code: "AFK" },
+
+  // ===== Level 2 =====
+  { id: "sq1",  unlocksAtLevel: 2, type: "CHALLENGE", title: "First Blood", description: "Beställ en dryck utan att kolla menyn. Peka och säg 'that one'. Ingen ånger.", xp: 25, code: "YOLO" },
   { id: "sq11", unlocksAtLevel: 2, type: "CHALLENGE", title: "Eternal Bond Proxy", description: "Hitta ett gift par på baren och berätta om The Eternal Bond. Få deras välsignelse.", xp: 75, code: "PROXY" },
+
+  // ===== Level 3 =====
+  { id: "sq2",  unlocksAtLevel: 3, type: "GUILD RULE", title: "Decree of the Disciple", description: "Du får införa EN regel som gäller hela guildet i 30 minuter. Regeln kan inte innebära att någon måste spendera pengar.", xp: 50, code: "MYLAW" },
+  { id: "sq3",  unlocksAtLevel: 3, type: "GRIND",     title: "Reputation Grind: Jonna", description: "Skicka ett meddelande till Jonna som innehåller orden 'eternal bond' utan att förklara varför. Screenshotta hennes svar.", xp: 50, code: "JONNA1" },
   { id: "sq12", unlocksAtLevel: 3, type: "CHALLENGE", title: "My 600lb Buffet", description: "Beställ mer mat än du kan äta. Fotografera tallriken. Skicka bilden helt okommenterat till en kontakt som guildet väljer åt dig. Inget förklarande. Ingen uppföljning.", xp: 50, code: "BUFFET" },
+
+  // ===== Level 4 — first "jobbig" arrives =====
+  { id: "sq4",  unlocksAtLevel: 4, type: "CHALLENGE", title: "Battlecry", description: "Gå fram till en främling och säg 'For The Horde' med full conviction. Bonuspoäng om de svarar.", xp: 50, code: "LOK" },
   { id: "sq13", unlocksAtLevel: 4, type: "CHALLENGE", title: "/dance IRL", description: "Dansa ensam på dansgolvet i minst 30 sekunder utan musikens hjälp. Vittnesmål krävs.", xp: 50, code: "DANCE" },
-  { id: "sq14", unlocksAtLevel: 5, type: "GRIND", title: "AFK Detection", description: "Om Raid Leader inte ser dig på 10 minuter = AFK-kick och -50 XP. Undviks genom att vara synlig. +50 XP bonus om du aktivt checkar in.", xp: 50, code: "AFK" },
+  { id: "sqh1", unlocksAtLevel: 4, type: "ORDEAL",    title: "25 for the Priest", description: "Genomför 25 strikta armhävningar. Olof räknar. Fusk = 0 XP och förödmjukelse.", xp: 150, code: "PUSHUP" },
+
+  // ===== Level 5 =====
+  { id: "sq5",  unlocksAtLevel: 5, type: "GRIND",     title: "Potion Master", description: "Drick tre olika shots under kvällen. En av varje färg: ljus, mörk, och 'varför finns detta'. Rapportera till Raid Leader.", xp: 50, code: "3SHOTS" },
+  { id: "sqh2", unlocksAtLevel: 5, type: "ORDEAL",    title: "The Confession", description: "Berätta ditt allra mest pinsamma minne. Inför hela guildet. Inga utelämnanden. Om någon redan hört det räknas det inte.", xp: 125, code: "CONFESS" },
+
+  // ===== Level 6 =====
+  { id: "sq7",  unlocksAtLevel: 6, type: "GUILD RULE", title: "Archon's Mandate", description: "Välj en partymedlem. Den personen måste hämta dryck/mat åt dig nästa gång gruppen beställer. Ingen förhandling.", xp: 25, code: "FETCH" },
   { id: "sq15", unlocksAtLevel: 6, type: "CHALLENGE", title: "Server Transfer", description: "Flytta runt bordet tre gånger under kvällen. Skäl: 'I'm exploring the dungeon.'", xp: 25, code: "XFER" },
+  { id: "sqh3", unlocksAtLevel: 6, type: "ORDEAL",    title: "Sing for Jonna", description: "Ring Jonna. Sjung första versen av er låt. Högtalare PÅ så guildet hör. Ingen förvarning.", xp: 150, code: "SING" },
+
+  // ===== Level 7 =====
+  { id: "sq8",  unlocksAtLevel: 7, type: "GRIND",     title: "Bard Mode: Activated", description: "Gå fram till DJ:n och be om att få rappa en 50cent låt. 10.000 XP om du klarar det.", xp: 75, code: "BARD" },
   { id: "sq16", unlocksAtLevel: 7, type: "CHALLENGE", title: "Achievement: Talks to Strangers", description: "Prata med en lokal invånare i minst 2 minuter om vad som helst. Avsluta med att få dem att ropa 'FOR THE HORDE' så högt att guildet hör det.", xp: 75, code: "HORDE" },
+  { id: "sqh4", unlocksAtLevel: 7, type: "ORDEAL",    title: "Cold Immersion", description: "Två minuter kallduschad. Inga kompromisser. Martin W kontrollerar kranvredet. Vittnen räknar sekunderna.", xp: 150, code: "COLD" },
+
+  // ===== Level 8–9 =====
+  { id: "sq9",  unlocksAtLevel: 8, type: "CHALLENGE", title: "Inspect Element", description: "Ge en ärlig, ofiltrerad compliment till varje partymedlem. Inte 'du är cool' — något specifikt. Alla åtta.", xp: 100, code: "INSPECT" },
+  { id: "sqh5", unlocksAtLevel: 8, type: "ORDEAL",    title: "Eat the Unknown", description: "Beställ något från marknaden du aldrig ätit förut. Utan Google. Utan ingredienslista. Gustaf väljer rätten.", xp: 125, code: "EATIT" },
+  { id: "sq10", unlocksAtLevel: 9, type: "GUILD RULE", title: "Exalted Decree", description: "Du får byta namn på en partymedlem för resten av kvällen. Alla MÅSTE använda det nya namnet.", xp: 50, code: "RENAME" },
 ];
 
 // ===== LEVELS + RANKS =====
 window.LEVELS = [
-  { level: 1,  xp: 0,    title: "Acolyte",    rank: "Unworthy",               desc: "Inte ens din mamma är imponerad." },
-  { level: 2,  xp: 100,  title: "Novice",     rank: "Barely Tolerated",       desc: "Guildet accepterar dig. Motvilligt." },
-  { level: 3,  xp: 250,  title: "Disciple",   rank: "Questionably Adequate",  desc: "Du existerar. Det är en start." },
-  { level: 4,  xp: 400,  title: "Cleric",     rank: "Grudgingly Accepted",    desc: "Ingen är imponerad. Ännu." },
-  { level: 5,  xp: 600,  title: "High Priest",rank: "Almost Decent",          desc: "Svagt. Men märkbart." },
-  { level: 6,  xp: 800,  title: "Archon",     rank: "Shows Promise",          desc: "Det rör sig... kanske." },
-  { level: 7,  xp: 1000, title: "Prophet",    rank: "Respectable",            desc: "Jonna nickar. Osäkert, men ändå." },
-  { level: 8,  xp: 1250, title: "Ascendant",  rank: "Battle-Hardened",        desc: "Du förtjänar din plats i guildet." },
-  { level: 9,  xp: 1500, title: "Exalted",    rank: "Worthy of Eternal Bond", desc: "Realm First. Inga ord räcker till." },
-  { level: 10, xp: 1800, title: "Eternal",    rank: "BOUND TO JONNA",         desc: "The Eternal Bond. Permanent. No Dispel. No Fade." },
+  { level: 1,  xp: 0,    title: "Unworthy",                  rank: "Unworthy",                  desc: "Du är ovärdig Jonna helt enkelt." },
+  { level: 2,  xp: 100,  title: "Pathfinder",                rank: "Pathfinder",                desc: "Din resa har bara börjat." },
+  { level: 3,  xp: 250,  title: "Perverted Priest",          rank: "Perverted Priest",          desc: "Du trodde kanske att du hade kommit en bit? Nej. Du har en lång resa kvar." },
+  { level: 4,  xp: 450,  title: "Young Padawan",             rank: "Young Padawan",             desc: "Du har tagit dina första stapplande steg mot Jonna." },
+  { level: 5,  xp: 700,  title: "Priest",                    rank: "Priest",                    desc: "Det börjar ta sig. Jonna har noterat din närvaro." },
+  { level: 6,  xp: 1000, title: "High Priest",               rank: "High Priest",               desc: "Jonna vet vem du är." },
+  { level: 7,  xp: 1400, title: "Respectable Prophet",       rank: "Respectable Prophet",       desc: "Du får komma in i stugan i Nacka. Men inte längre." },
+  { level: 8,  xp: 1800, title: "Battle-Hardened",           rank: "Battle-Hardened",           desc: "Du har gjort dig förtjänt av en plats i guilden. Grattis!" },
+  { level: 9,  xp: 2300, title: "Worthy of the Eternal Bond",rank: "Worthy of the Eternal Bond",desc: "Jonnas päron accepterar ditt frieri." },
+  { level: 10, xp: 2900, title: "Bound to Jonna",            rank: "Bound to Jonna",            desc: "The Eternal Bond. Du är perma bondad till Jonna. GG." },
 ];
 
 // ===== PERKS & CURSES (ability unlocks / debuffs) =====
@@ -247,14 +271,22 @@ window.PERKS_DATA = [
 // ===== PARTY =====
 window.PARTY = [
   { name: "Mauritz",  cls: "Holy Priest",   icon: "✝️", role: "The one who heals must now be healed", hiddenUntilQuest: null, color: "#ffffff", primary: "SPI" },
-  { name: "Gustaf",   cls: "Paladin",       icon: "⚔️", role: "Raid Leader · Best Man",               hiddenUntilQuest: null, color: "#F58CBA", baseLevel: 89, baseHp: 6240, primary: "STR", basePrimary: 178 },
-  { name: "Philip",   cls: "Rogue",         icon: "🗡️", role: "Shadow Operative",                     hiddenUntilQuest: null, color: "#FFF569", baseLevel: 87, baseHp: 5420, primary: "AGI", basePrimary: 166 },
-  { name: "Christian",cls: "Warlock",       icon: "🔥", role: "Toastmaster",                          hiddenUntilQuest: 6,    color: "#9482C9", baseLevel: 88, baseHp: 5820, primary: "INT", basePrimary: 172 },
-  { name: "Olof",     cls: "Hunter",        icon: "🏹", role: "Reinforcement",                        hiddenUntilQuest: 4,    color: "#AAD372", baseLevel: 85, baseHp: 5280, primary: "AGI", basePrimary: 159 },
-  { name: "David",    cls: "Shaman",        icon: "🌿", role: "Reinforcement",                        hiddenUntilQuest: 4,    color: "#0070DE", baseLevel: 86, baseHp: 5520, primary: "INT", basePrimary: 163 },
-  { name: "Martin W", cls: "Warrior",       icon: "🛡️", role: "Tank",                                 hiddenUntilQuest: null, color: "#C79C6E", baseLevel: 90, baseHp: 6480, primary: "STR", basePrimary: 184 },
-  { name: "Filip",    cls: "Mage",          icon: "✨", role: "DPS",                                  hiddenUntilQuest: null, color: "#69CCF0", baseLevel: 86, baseHp: 5180, primary: "INT", basePrimary: 169 },
-  { name: "Martin I", cls: "Death Knight",  icon: "💀", role: "Wildcard",                             hiddenUntilQuest: null, color: "#C41F3B", baseLevel: 91, baseHp: 6380, primary: "STR", basePrimary: 181 },
+  { name: "Gustaf",   cls: "Paladin",       icon: "⚔️", role: "Raid Leader · Best Man",               hiddenUntilQuest: null, color: "#F58CBA", baseLevel: 89, baseHp: 6240, primary: "STR", basePrimary: 178,
+    curse: { icon: "⚔️", name: "RAID LEADER'S COMMAND", desc: "Gustaf kan en gång ge en direkt order. Du lyder utan frågor. En gång per akt." } },
+  { name: "Philip",   cls: "Rogue",         icon: "🗡️", role: "Shadow Operative",                     hiddenUntilQuest: null, color: "#FFF569", baseLevel: 87, baseHp: 5420, primary: "AGI", basePrimary: 166,
+    curse: { icon: "🗡️", name: "SHADOW AUDIT", desc: "Philip observerar dig dolt i 30 min. Varje låg handling = −25 XP. Du vet inte när det börjar. Du vet inte när det slutar." } },
+  { name: "Christian",cls: "Warlock",       icon: "🔥", role: "Toastmaster",                          hiddenUntilQuest: 6,    color: "#9482C9", baseLevel: 88, baseHp: 5820, primary: "INT", basePrimary: 172,
+    curse: { icon: "☠️", name: "TOASTMASTER'S DARE", desc: "Christian kan detonera ett dare. En per akt. Tre totalt. Kan inte nekas. Kan inte Dispela. Kan inte Fade." } },
+  { name: "Olof",     cls: "Hunter",        icon: "🏹", role: "Reinforcement",                        hiddenUntilQuest: 4,    color: "#AAD372", baseLevel: 85, baseHp: 5280, primary: "AGI", basePrimary: 159,
+    curse: { icon: "🎯", name: "HUNTER'S MARK", desc: "Olof markerar ditt glas. Du har 20 minuter att tömma det. Misslyckas = −50 XP och förnedring." } },
+  { name: "David",    cls: "Shaman",        icon: "🌿", role: "Reinforcement",                        hiddenUntilQuest: 4,    color: "#0070DE", baseLevel: 86, baseHp: 5520, primary: "INT", basePrimary: 163,
+    curse: { icon: "🌀", name: "TOTEM DROP", desc: "David planterar ett osynligt totem. Du måste stå inom 3 meter i 10 minuter. Flytta dig = totemet följer inte." } },
+  { name: "Martin W", cls: "Warrior",       icon: "🛡️", role: "Tank",                                 hiddenUntilQuest: null, color: "#C79C6E", baseLevel: 90, baseHp: 6480, primary: "STR", basePrimary: 184,
+    curse: { icon: "⚡", name: "CHARGE!", desc: "Martin W pekar på en främling. Du måste Charge:a fram och säga något äkta — inte cringe, inte ironi." } },
+  { name: "Filip",    cls: "Mage",          icon: "✨", role: "DPS",                                  hiddenUntilQuest: null, color: "#69CCF0", baseLevel: 86, baseHp: 5180, primary: "INT", basePrimary: 169, mia: true,
+    curse: { icon: "❄️", name: "MISSING IN ACTION", desc: "Filip är MIA. Hans curse slumrar tills han återvänder från sin solo-raid." } },
+  { name: "Martin I", cls: "Death Knight",  icon: "💀", role: "Wildcard",                             hiddenUntilQuest: null, color: "#C41F3B", baseLevel: 91, baseHp: 6380, primary: "STR", basePrimary: 181,
+    curse: { icon: "🪦", name: "DEATH GRIP", desc: "Martin I får en gång per akt dra dig med sig vart han går i 10 minuter. Inga undantag." } },
 ];
 
 // ===== LOOT TABLE — rolled on quest complete =====
@@ -270,6 +302,8 @@ window.LOOT_TABLE = {
     { name: "Järpe of Wisdom",                      flavor: "+3 HP · Djupfryst. Märke: Picard. Salmonella probability: high." },
     { name: "Guild Chat Log (Redacted)",            flavor: "+1 LORE · 94% är memes. De andra 6% är roast." },
     { name: "Discount Hearthstone",                 flavor: "Du kan teleportera dig 3 meter i valfri riktning en gång. Denna bugg är inte fixad sedan 2009." },
+    { name: "Draft Press Release (Unsent)",         flavor: "+2 PR · Tre stycken om ingenting. Mejlkorgen har aldrig sett en skickad version." },
+    { name: "No Comment.jpg",                       flavor: "+0 · Det säkraste svaret är alltid det du inte ger." },
   ],
   rare: [
     { name: "Locket with Jonna's Photo",            flavor: "+10 WIS · Öppnas när du behöver minnas varför." },
@@ -282,6 +316,9 @@ window.LOOT_TABLE = {
     { name: "Jonna's Cooking Buff",                 flavor: "+30 HP · Jonna lagar din favoriträtt och du får en temporär HP bonus. Succé!" },
     { name: "Bröllop Invitation (Hand delivered)",  flavor: "+80 CHARM · En fin inbjudan tryckt på 180g naturpapper. Designad av Jonna." },
     { name: "Job Application (Denied)",             flavor: "-200 LINKEDIN · Dom ringde från Avalanche. Du fick inte jobbet. Sry!" },
+    { name: "Damage Control Manual",                flavor: "+10 PR · Steg 1: Be om ursäkt. Steg 2: Tyst i 72 timmar. Steg 3: Var någon annan." },
+    { name: "Leaked Slack Message",                 flavor: "-30 REPUTATION · Den var menad för DM. Den landade i guild-chatten. Screenshoten sprids i realtid." },
+    { name: "Influencer Apology Video",             flavor: "+15 CHA · Svartvit. Läpparna skakar. Känns äkta på 47 sekunder in." },
   ],
   epic: [
     { name: "Jonna's Phone Number (Verified)",      flavor: "LEGENDARY BOND ITEM · Använd en gång per kampanj. Använd klokt." },
@@ -292,6 +329,8 @@ window.LOOT_TABLE = {
     { name: "Jonna's Veto Power (Framed)",          flavor: "+50 CHARM · Du erkänner att Jonna alltid har rätt och får 50 CHARM." },
     { name: "50 Cent Knowledge",                    flavor: "-30.000 REPUTATION · 50 Cent ser en video på dig när du rappar 'In Da Club' - felfritt. Han försöker kontakta dig men eftersom du inte har sociala medier så ger han upp." },
     { name: "YouTube History (Leaked)",             flavor: "+500 SHAME · Jonna ser din Youtube-historik. RIP. 500 shame per minut." },
+    { name: "The PR Crisis Playbook",               flavor: "+25 WIS · Sidan 47 är överstryken. Det är inte ett tecken. Eller kanske är det ett tecken." },
+    { name: "Dagens Nyheter (About You)",           flavor: "-100 REPUTATION · Rubriken står kvar i evighet. Ingress: 'Enligt källor...'" },
   ],
   legendary: [
     { name: "The Eternal Vow (Unspoken)",            flavor: "SET ITEM · Aktiveras när du bär den framför Jonna vid altaret." },

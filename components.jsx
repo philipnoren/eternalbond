@@ -276,11 +276,23 @@ window.QCard = function QCard({ q, unlocked, onUnlock, t, muted, bossDmg, onBoss
             {q.body.split("\n\n").map((p, i) => <p key={i} className="mb-3">{p}</p>)}
           </div>
 
-          {/* objective */}
-          <div className="mb-4 rounded p-3" style={{ background: "rgba(255,176,40,0.08)", border: "1px solid rgba(255,176,40,0.45)", boxShadow: "0 0 14px rgba(255,176,40,0.12)" }}>
-            <div style={{ color: "#ffb830", fontSize: "10px", letterSpacing: "2px", fontWeight: 900, marginBottom: "6px", fontFamily: "'JetBrains Mono',monospace", textShadow: "0 0 8px rgba(255,184,48,0.45)" }}>▸ OBJECTIVE</div>
-            <div style={{ color: "#ffe6b0", fontSize: "13px", lineHeight: 1.6, fontWeight: 500 }}>{q.objective}</div>
-          </div>
+          {/* objective(s) */}
+          {q.objectives && q.objectives.length > 1 ? (
+            <div className="mb-4 rounded p-3" style={{ background: "rgba(255,176,40,0.08)", border: "1px solid rgba(255,176,40,0.45)", boxShadow: "0 0 14px rgba(255,176,40,0.12)" }}>
+              <div style={{ color: "#ffb830", fontSize: "10px", letterSpacing: "2px", fontWeight: 900, marginBottom: "8px", fontFamily: "'JetBrains Mono',monospace", textShadow: "0 0 8px rgba(255,184,48,0.45)" }}>▸ OBJECTIVES</div>
+              {q.objectives.map((o, i) => (
+                <div key={i} className={i === q.objectives.length - 1 ? "" : "mb-3 pb-3"} style={{ borderBottom: i === q.objectives.length - 1 ? "none" : "1px dashed rgba(255,176,40,0.2)" }}>
+                  <div style={{ color: "#ffb830", fontSize: "10px", fontWeight: 900, marginBottom: "4px", fontFamily: "'JetBrains Mono',monospace", letterSpacing: "1.5px" }}>OBJECTIVE {i + 1}</div>
+                  <div style={{ color: "#ffe6b0", fontSize: "13px", lineHeight: 1.6, fontWeight: 500 }}>{o}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="mb-4 rounded p-3" style={{ background: "rgba(255,176,40,0.08)", border: "1px solid rgba(255,176,40,0.45)", boxShadow: "0 0 14px rgba(255,176,40,0.12)" }}>
+              <div style={{ color: "#ffb830", fontSize: "10px", letterSpacing: "2px", fontWeight: 900, marginBottom: "6px", fontFamily: "'JetBrains Mono',monospace", textShadow: "0 0 8px rgba(255,184,48,0.45)" }}>▸ OBJECTIVE</div>
+              <div style={{ color: "#ffe6b0", fontSize: "13px", lineHeight: 1.6, fontWeight: 500 }}>{q.objective}</div>
+            </div>
+          )}
 
           {/* rules */}
           {q.rules && q.rules.length > 0 && (
