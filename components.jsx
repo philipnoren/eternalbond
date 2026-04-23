@@ -333,7 +333,7 @@ window.QCard = function QCard({ q, unlocked, onUnlock, t, muted, bossDmg, onBoss
 // ----- Side quest card -----
 window.SQCard = function SQCard({ sq, done, onDone, t, muted }) {
   const [sc, setSc] = useState(false);
-  const tc = { CHALLENGE: "#ff8040", "GUILD RULE": "#40a0ff", DECREE: "#40a0ff", GRIND: "#b060e0", JONNA: "#ff5080" }[sq.type] || "#c0a040";
+  const tc = { CHALLENGE: "#ff8040", "GUILD RULE": "#40a0ff", DECREE: "#40a0ff", GRIND: "#b060e0", JONNA: "#ff5080", ORDEAL: "#ff4050" }[sq.type] || "#c0a040";
   return (
     <div className="mb-2 rounded-lg p-3 card-padding" style={{
       background: done ? "rgba(92,184,92,0.08)" : "rgba(16,10,24,0.75)",

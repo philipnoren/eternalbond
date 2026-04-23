@@ -268,25 +268,38 @@ window.PERKS_DATA = [
   { questNum: 10, type: "curse", name: "HANGOVER PROPHECY",    desc: "Du VET att du kommer ångra dig imorgon. Enda sättet att häva: drick ett glas vatten nu. Nu.", icon: "🤕" },
 ];
 
+// ===== RANDOM CURSE DROPS — rolled occasionally on quest unlock =====
+// Themed for svensexa: silly, social, harmless. Mauritz can refuse, but
+// refusal = drink a shot. Guild enforces.
+window.CURSES_POOL = [
+  { type: "curse", name: "VOICE OF YODA",        icon: "🧙", desc: "I 15 minuter tala bara som Yoda du måste. Bryta = en shot ta du ska." },
+  { type: "curse", name: "NEW IDENTITY",         icon: "🆔", desc: "Resten av timmen heter du Reinhardt. Svarar du på 'Mauritz' = en shot. Guildet tilltalar dig endast med Reinhardt." },
+  { type: "curse", name: "PROPHET'S TONGUE",     icon: "💍", desc: "I 10 minuter pratar du bara om Jonna. Varje ämne ska kopplas tillbaka till henne. Bryter du = shot." },
+  { type: "curse", name: "BARTENDER'S CHOICE",   icon: "🍹", desc: "Beställ en drink du aldrig druckit. Bartendern väljer. Inga frågor. Inga byten." },
+  { type: "curse", name: "GROOM SHIELD",         icon: "🛡️", desc: "Nästa timme dricker du bara det guildet beställer åt dig. Du får inte beställa själv. Vad de väljer är du." },
+  { type: "curse", name: "DRUNKEN BARD",         icon: "🎤", desc: "Beställ din nästa dryck genom att sjunga den. Bartendern måste fatta beställningen för att den ska räknas." },
+  { type: "curse", name: "WALK OF THE PRIEST",   icon: "🚶", desc: "Nästa gång du går till toaletten — baklänges hela vägen. Inget fusk. Vittnesmål krävs." },
+  { type: "curse", name: "HOUR OF THE HORDE",    icon: "📣", desc: "Nästa hela timme: varje gång ditt glas är tomt — ropa 'FOR THE HORDE' så hela baren hör." },
+  { type: "curse", name: "SHEEP HOUR",           icon: "🐑", desc: "Nästa 5 minuter besvarar du alla frågor med 'bä'. Inga undantag. Bryter du = shot." },
+  { type: "curse", name: "THE WINGMAN PROTOCOL", icon: "🤝", desc: "Hjälp en partymedlem att introducera sig för en främling. DU börjar samtalet. Inga ursäkter." },
+  { type: "curse", name: "RING OF PROPOSAL",     icon: "💒", desc: "Fråga en främling om de vill gifta sig med dig. Helt allvarligt. Foto av reaktionen krävs." },
+  { type: "curse", name: "SECRET WHISPERS",      icon: "🤫", desc: "Berätta en hemlighet du aldrig sagt högt. Inför hela guildet. Eller drick en shot — du väljer." },
+  { type: "curse", name: "PRIEST'S DECREE",      icon: "📜", desc: "Du måste välsigna nästa person som passerar förbi bordet. Lägg en hand på deras axel och säg något profetiskt." },
+  { type: "curse", name: "MIRROR MATCH",         icon: "🪞", desc: "Härma den partymedlem som suttit till vänster om dig — i både gestik och tonläge — i 5 minuter. Avslöjas du = shot." },
+  { type: "curse", name: "HEALER'S VOW",         icon: "✝️", desc: "Du får inte säga ordet 'Jonna' i 30 minuter. Varje brott = en shot. Holy Priest tystnad." },
+];
+
 // ===== PARTY =====
 window.PARTY = [
   { name: "Mauritz",  cls: "Holy Priest",   icon: "✝️", role: "The one who heals must now be healed", hiddenUntilQuest: null, color: "#ffffff", primary: "SPI" },
-  { name: "Gustaf",   cls: "Paladin",       icon: "⚔️", role: "Raid Leader · Best Man",               hiddenUntilQuest: null, color: "#F58CBA", baseLevel: 89, baseHp: 6240, primary: "STR", basePrimary: 178,
-    curse: { icon: "⚔️", name: "RAID LEADER'S COMMAND", desc: "Gustaf kan en gång ge en direkt order. Du lyder utan frågor. En gång per akt." } },
-  { name: "Philip",   cls: "Rogue",         icon: "🗡️", role: "Shadow Operative",                     hiddenUntilQuest: null, color: "#FFF569", baseLevel: 87, baseHp: 5420, primary: "AGI", basePrimary: 166,
-    curse: { icon: "🗡️", name: "SHADOW AUDIT", desc: "Philip observerar dig dolt i 30 min. Varje låg handling = −25 XP. Du vet inte när det börjar. Du vet inte när det slutar." } },
-  { name: "Christian",cls: "Warlock",       icon: "🔥", role: "Toastmaster",                          hiddenUntilQuest: 6,    color: "#9482C9", baseLevel: 88, baseHp: 5820, primary: "INT", basePrimary: 172,
-    curse: { icon: "☠️", name: "TOASTMASTER'S DARE", desc: "Christian kan detonera ett dare. En per akt. Tre totalt. Kan inte nekas. Kan inte Dispela. Kan inte Fade." } },
-  { name: "Olof",     cls: "Hunter",        icon: "🏹", role: "Reinforcement",                        hiddenUntilQuest: 4,    color: "#AAD372", baseLevel: 85, baseHp: 5280, primary: "AGI", basePrimary: 159,
-    curse: { icon: "🎯", name: "HUNTER'S MARK", desc: "Olof markerar ditt glas. Du har 20 minuter att tömma det. Misslyckas = −50 XP och förnedring." } },
-  { name: "David",    cls: "Shaman",        icon: "🌿", role: "Reinforcement",                        hiddenUntilQuest: 4,    color: "#0070DE", baseLevel: 86, baseHp: 5520, primary: "INT", basePrimary: 163,
-    curse: { icon: "🌀", name: "TOTEM DROP", desc: "David planterar ett osynligt totem. Du måste stå inom 3 meter i 10 minuter. Flytta dig = totemet följer inte." } },
-  { name: "Martin W", cls: "Warrior",       icon: "🛡️", role: "Tank",                                 hiddenUntilQuest: null, color: "#C79C6E", baseLevel: 90, baseHp: 6480, primary: "STR", basePrimary: 184,
-    curse: { icon: "⚡", name: "CHARGE!", desc: "Martin W pekar på en främling. Du måste Charge:a fram och säga något äkta — inte cringe, inte ironi." } },
-  { name: "Filip",    cls: "Mage",          icon: "✨", role: "DPS",                                  hiddenUntilQuest: null, color: "#69CCF0", baseLevel: 86, baseHp: 5180, primary: "INT", basePrimary: 169, mia: true,
-    curse: { icon: "❄️", name: "MISSING IN ACTION", desc: "Filip är MIA. Hans curse slumrar tills han återvänder från sin solo-raid." } },
-  { name: "Martin I", cls: "Death Knight",  icon: "💀", role: "Wildcard",                             hiddenUntilQuest: null, color: "#C41F3B", baseLevel: 91, baseHp: 6380, primary: "STR", basePrimary: 181,
-    curse: { icon: "🪦", name: "DEATH GRIP", desc: "Martin I får en gång per akt dra dig med sig vart han går i 10 minuter. Inga undantag." } },
+  { name: "Gustaf",   cls: "Paladin",       icon: "⚔️", role: "Raid Leader · Best Man",               hiddenUntilQuest: null, color: "#F58CBA", baseLevel: 89, baseHp: 6240, primary: "STR", basePrimary: 178 },
+  { name: "Philip",   cls: "Rogue",         icon: "🗡️", role: "Shadow Operative",                     hiddenUntilQuest: null, color: "#FFF569", baseLevel: 87, baseHp: 5420, primary: "AGI", basePrimary: 166 },
+  { name: "Christian",cls: "Warlock",       icon: "🔥", role: "Toastmaster",                          hiddenUntilQuest: 6,    color: "#9482C9", baseLevel: 88, baseHp: 5820, primary: "INT", basePrimary: 172 },
+  { name: "Olof",     cls: "Hunter",        icon: "🏹", role: "Reinforcement",                        hiddenUntilQuest: 4,    color: "#AAD372", baseLevel: 85, baseHp: 5280, primary: "AGI", basePrimary: 159 },
+  { name: "David",    cls: "Shaman",        icon: "🌿", role: "Reinforcement",                        hiddenUntilQuest: 4,    color: "#0070DE", baseLevel: 86, baseHp: 5520, primary: "INT", basePrimary: 163 },
+  { name: "Martin W", cls: "Warrior",       icon: "🛡️", role: "Tank",                                 hiddenUntilQuest: null, color: "#C79C6E", baseLevel: 90, baseHp: 6480, primary: "STR", basePrimary: 184 },
+  { name: "Filip",    cls: "Mage",          icon: "✨", role: "DPS",                                  hiddenUntilQuest: null, color: "#69CCF0", baseLevel: 86, baseHp: 5180, primary: "INT", basePrimary: 169, mia: true },
+  { name: "Martin I", cls: "Death Knight",  icon: "💀", role: "Wildcard",                             hiddenUntilQuest: null, color: "#C41F3B", baseLevel: 91, baseHp: 6380, primary: "STR", basePrimary: 181 },
 ];
 
 // ===== LOOT TABLE — rolled on quest complete =====

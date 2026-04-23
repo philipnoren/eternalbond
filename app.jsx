@@ -57,18 +57,29 @@ function App() {
     const ns = { ...s, uq: [...s.uq, n] };
     const tier = pickLootTierForQuest(n);
     const it = rollLoot(tier, ns.loot || []);
-    const ns2 = { ...ns, loot: [...(ns.loot || []), it] };
+    let ns2 = { ...ns, loot: [...(ns.loot || []), it] };
+    // random curse drop — ~30% chance from quest 3 onwards, no repeats
+    let droppedCurse = null;
+    if (n >= 3 && Math.random() < 0.3) {
+      const drawn = new Set(ns2.dc || []);
+      const available = CURSES_POOL.filter(c => !drawn.has(c.name));
+      if (available.length > 0) {
+        droppedCurse = available[Math.floor(Math.random() * available.length)];
+        ns2 = { ...ns2, dc: [...(ns2.dc || []), droppedCurse.name] };
+      }
+    }
     setS(ns2); await ebSave(ns2);
     const willLvl = getLvl(calcXP(ns2)).level > plr.current;
     const perks = PERKS_DATA.filter(p => p.questNum === n);
-    const hasPerks = perks.length > 0;
+    const allPerks = droppedCurse ? [...perks, droppedCurse] : perks;
+    const hasPerks = allPerks.length > 0;
     // queue order: level → perk(s) → loot
     setTimeout(() => {
       chkLvl(ns2);
       if (hasPerks) {
-        if (willLvl) perks.forEach(p => puaQueue.current.push(p));
+        if (willLvl) allPerks.forEach(p => puaQueue.current.push(p));
         else {
-          const [first, ...rest] = perks;
+          const [first, ...rest] = allPerks;
           rest.forEach(p => puaQueue.current.push(p));
           setTimeout(() => setPua(first), 600);
         }
@@ -414,16 +425,6 @@ function App() {
                         <span style={{ color: "#8aff8a" }}>HP {st.hp.toLocaleString()}</span>
                         <span style={{ color: "#5a4a6a" }}>{"  ·  "}</span>
                         <span style={{ color: "#b080ff" }}>{st.primary} {st.primaryVal}</span>
-                      </div>
-                    )}
-                    {!isMauritz && m.curse && (
-                      <div style={{ marginTop: "6px", padding: "6px 8px", borderRadius: "4px", background: mia ? "rgba(30,30,38,0.6)" : "rgba(255,64,80,0.08)", border: `1px solid ${mia ? "rgba(120,120,140,0.25)" : "rgba(255,64,80,0.3)"}` }}>
-                        <div style={{ color: mia ? "#7a7a8a" : "#ff8090", fontSize: "9px", fontFamily: "'JetBrains Mono',monospace", fontWeight: 900, letterSpacing: "2px", marginBottom: "2px" }}>
-                          {m.curse.icon} CURSE · {m.curse.name}
-                        </div>
-                        <div style={{ color: mia ? "#7a7a8a" : "#d4b8bc", fontSize: "11px", lineHeight: 1.4, fontStyle: "italic" }}>
-                          {m.curse.desc}
-                        </div>
                       </div>
                     )}
                   </div>
