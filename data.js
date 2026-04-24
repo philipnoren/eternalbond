@@ -69,7 +69,7 @@ window.QUESTS = [
     tier: "epic",
     boss: null,
     flavor: "Minns du party-rostern? Minns du de tomma platserna?",
-    body: "Hunter: \"Ej lokaliserad. Signal förlorad.\"\nShaman: \"Ej lokaliserad. Signal förlorad.\"\n\nVi ljög inte. Deras signal VAR förlorad. De befann sig i andra delar av riket, långt bortom räckhåll. Vi visste inte om de skulle hinna. Vi visste inte om portalen skulle hålla.\n\nMen den höll.\n\nDe är här nu. Din Hunter och din Shaman. De korsade länder och tidszoner för att stå vid din sida i kampanjens avgörande fas.",
+    body: "Hunter: \"Ej lokaliserad. Signal förlorad.\"\nShaman: \"Ej lokaliserad. Signal förlorad.\"\n\nVi ljög inte. Deras signal VAR förlorad. De befann sig i andra delar av riket, långt bortom räckhåll — kusinerna från landet, fast i sina egna questlines. Vi visste inte om de skulle hinna. Vi visste inte om portalen skulle hålla.\n\nMen den höll.\n\nDe är här nu. Din Hunter och din Shaman. Kusinerna från landet har korsat länder och tidszoner för att stå vid din sida i kampanjens avgörande fas.",
     objective: "Välkomna dina förlorade allierade med en proper Guild Greeting: en gruppshot.",
     rules: [
       "Raid difficulty ökar."
@@ -287,6 +287,7 @@ window.CURSES_POOL = [
   { type: "curse", name: "PRIEST'S DECREE",      icon: "📜", desc: "Du måste välsigna nästa person som passerar förbi bordet. Lägg en hand på deras axel och säg något profetiskt." },
   { type: "curse", name: "MIRROR MATCH",         icon: "🪞", desc: "Härma den partymedlem som suttit till vänster om dig — i både gestik och tonläge — i 5 minuter. Avslöjas du = shot." },
   { type: "curse", name: "HEALER'S VOW",         icon: "✝️", desc: "Du får inte säga ordet 'Jonna' i 30 minuter. Varje brott = en shot. Holy Priest tystnad." },
+  { type: "curse", name: "LANGUAGE BARRIER",     icon: "🗣️", desc: "Hele guildet snakker dansk i 10 minuter. Den som bryter språket = en shot. Mauritz leder an.", repeatable: true },
 ];
 
 // ===== PARTY =====

@@ -58,14 +58,17 @@ function App() {
     const tier = pickLootTierForQuest(n);
     const it = rollLoot(tier, ns.loot || []);
     let ns2 = { ...ns, loot: [...(ns.loot || []), it] };
-    // random curse drop — ~30% chance from quest 3 onwards, no repeats
+    // random curse drop — ~30% chance from quest 3 onwards.
+    // Non-repeatable curses drop once; repeatables can return.
     let droppedCurse = null;
     if (n >= 3 && Math.random() < 0.3) {
       const drawn = new Set(ns2.dc || []);
-      const available = CURSES_POOL.filter(c => !drawn.has(c.name));
+      const available = CURSES_POOL.filter(c => c.repeatable || !drawn.has(c.name));
       if (available.length > 0) {
         droppedCurse = available[Math.floor(Math.random() * available.length)];
-        ns2 = { ...ns2, dc: [...(ns2.dc || []), droppedCurse.name] };
+        if (!droppedCurse.repeatable) {
+          ns2 = { ...ns2, dc: [...(ns2.dc || []), droppedCurse.name] };
+        }
       }
     }
     setS(ns2); await ebSave(ns2);
