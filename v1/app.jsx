@@ -2,7 +2,7 @@
 const { useState: useSt, useEffect: useEf, useCallback: useCb, useRef: useRf, useMemo: useMe } = React;
 
 function App() {
-  const [s, setS] = useSt({ uq: [], csq: [], loot: [], variant: "safe", gc: false, dx: false, bs: 0, bossDmg: {}, muted: false, ob: false });
+  const [s, setS] = useSt({ uq: [], csq: [], loot: [], variant: "safe", gc: false, dx: false, bs: 0, bossDmg: {}, muted: false });
   const [loading, setLoading] = useSt(true);
   const [tab, setTab] = useSt("quests");
   const [lua, setLua] = useSt(null);
@@ -53,42 +53,31 @@ function App() {
     }
   }, []);
 
+  const dropLoot = useCb((tier, ns) => {
+    const it = rollLoot(tier);
+    const ns2 = { ...ns, loot: [...(ns.loot || []), it] };
+    setS(ns2); ebSave(ns2);
+    lootQueue.current.push(it);
+  }, []);
+
   const unlockQ = useCb(async (n) => {
+    const q = QUESTS.find(x => x.num === n);
     const ns = { ...s, uq: [...s.uq, n] };
-    const tier = pickLootTierForQuest(n);
-    const it = rollLoot(tier, ns.loot || []);
-    let ns2 = { ...ns, loot: [...(ns.loot || []), it] };
-    // random curse drop — ~30% chance from quest 3 onwards.
-    // Non-repeatable curses drop once; repeatables can return.
-    let droppedCurse = null;
-    if (n >= 3 && Math.random() < 0.3) {
-      const drawn = new Set(ns2.dc || []);
-      const available = CURSES_POOL.filter(c => c.repeatable || !drawn.has(c.name));
-      if (available.length > 0) {
-        droppedCurse = available[Math.floor(Math.random() * available.length)];
-        if (!droppedCurse.repeatable) {
-          ns2 = { ...ns2, dc: [...(ns2.dc || []), droppedCurse.name] };
-        }
-      }
-    }
+    const tier = q?.tier || "common";
+    const it = rollLoot(tier);
+    const ns2 = { ...ns, loot: [...(ns.loot || []), it] };
     setS(ns2); await ebSave(ns2);
     const willLvl = getLvl(calcXP(ns2)).level > plr.current;
-    const perks = PERKS_DATA.filter(p => p.questNum === n);
-    const allPerks = droppedCurse ? [...perks, droppedCurse] : perks;
-    const hasPerks = allPerks.length > 0;
-    // queue order: level → perk(s) → loot
+    const perk = PERKS_DATA.find(p => p.questNum === n);
+    // queue order: level → perk → loot
     setTimeout(() => {
       chkLvl(ns2);
-      if (hasPerks) {
-        if (willLvl) allPerks.forEach(p => puaQueue.current.push(p));
-        else {
-          const [first, ...rest] = allPerks;
-          rest.forEach(p => puaQueue.current.push(p));
-          setTimeout(() => setPua(first), 600);
-        }
+      if (perk) {
+        if (willLvl) puaQueue.current.push(perk);
+        else setTimeout(() => setPua(perk), 600);
       }
       lootQueue.current.push(it);
-      if (!willLvl && !hasPerks) {
+      if (!willLvl && !perk) {
         const nxt = lootQueue.current.shift();
         if (nxt) setTimeout(() => { setLootUp(nxt); if (!s.muted) SFX.loot(nxt.tier); }, 500);
       }
@@ -103,7 +92,7 @@ function App() {
     // small loot chance on side quests
     if (Math.random() < 0.5) {
       const tier = sq.xp >= 75 ? "rare" : "common";
-      const it = rollLoot(tier, ns.loot || []);
+      const it = rollLoot(tier);
       const ns2 = { ...ns, loot: [...(ns.loot || []), it] };
       setS(ns2); await ebSave(ns2);
       setTimeout(() => { setLootUp(it); if (!s.muted) SFX.loot(tier); }, 400);
@@ -122,7 +111,7 @@ function App() {
       setTimeout(() => {
         if (!s.muted) SFX.crit();
         const tier = q.num === 10 ? "legendary" : "epic";
-        const it = rollLoot(tier, ns.loot || []);
+        const it = rollLoot(tier);
         const ns2 = { ...ns, loot: [...(ns.loot || []), it] };
         setS(ns2); ebSave(ns2);
         setLootUp(it);
@@ -210,10 +199,8 @@ function App() {
 @keyframes perkIconPop{0%{transform:scale(0)}30%{transform:scale(1.3)}60%{transform:scale(0.9)}100%{transform:scale(1)}}
 @keyframes bossPulse{0%{background-position:0% 50%}100%{background-position:200% 50%}}
 @keyframes borderShift{0%{background-position:0% 50%}100%{background-position:200% 50%}}
-@keyframes mapPulse{0%,100%{box-shadow:0 0 0 0 currentColor;transform:scale(1)}50%{box-shadow:0 0 0 6px transparent;transform:scale(1.08)}}
       `}</style>
 
-      {!s.ob && <OnboardingOverlay t={t} onFinish={() => { const ns = { ...s, ob: true }; setS(ns); ebSave(ns); }} />}
       {lua && <LevelUpOverlay lvl={lua} t={t} onDismiss={dismissLua} />}
       {pua && <PerkOverlay perk={pua} t={t} onDismiss={dismissPua} />}
       {lootUp && <LootOverlay item={lootUp} onDismiss={dismissLoot} />}
@@ -242,7 +229,7 @@ function App() {
             Bind · or · break.
           </div>
           <div style={{ color: "#6a5a7a", fontSize: "10px", marginTop: "4px", fontFamily: "'JetBrains Mono',monospace", letterSpacing: "1px" }}>
-            MAURITZ ⚭ JONNA · LUNDINHOLD · APRIL 2026
+            MAURITZ ⚭ JONNA · THE LANDS BEYOND · APRIL 2026
           </div>
         </div>
 
@@ -309,10 +296,10 @@ function App() {
             ))}
           </div>
 
-          <div className="flex justify-between mt-2" style={{ fontSize: "10px", fontFamily: "'JetBrains Mono',monospace", letterSpacing: "1px" }}>
-            <span style={{ color: "#8aff8a" }}>✓ {s.uq.length} QUESTS</span>
-            <span style={{ color: "#ffb040" }}>◆ {s.csq.length} SIDE</span>
-            <span style={{ color: "#b080ff" }}>◇ {(s.loot || []).length} LOOT</span>
+          <div className="flex justify-between mt-2" style={{ fontSize: "10px", color: "#7a6a8a", fontFamily: "'JetBrains Mono',monospace", letterSpacing: "1px" }}>
+            <span>{s.uq.length}/{QUESTS.length} QUESTS</span>
+            <span>{s.csq.length}/{SIDE_QUESTS.length} SIDE</span>
+            <span>{(s.loot || []).length} LOOT</span>
           </div>
         </div>
       </div>
@@ -381,59 +368,30 @@ function App() {
         {tab === "party" && (
           <div className="space-y-2">
             <div className="mb-2" style={{ color: "#8a7a9a", fontSize: "10px", letterSpacing: "2px", fontFamily: "'JetBrains Mono',monospace", fontWeight: 700 }}>
-              ◆ GUILD ROSTER
+              ▸ GUILD ROSTER — {PARTY.filter(m => !m.hiddenUntilQuest || s.uq.includes(m.hiddenUntilQuest)).length}/{PARTY.length}
             </div>
-            {PARTY.filter(m => !m.hiddenUntilQuest || s.uq.includes(m.hiddenUntilQuest)).map(m => {
-              const st = memberStats(m, lvl.level);
-              const isMauritz = m.name === "Mauritz";
-              const mia = m.mia;
-              const borderColor = mia ? "rgba(120,120,140,0.35)" : `${m.color || t.accent}55`;
-              const iconColor = mia ? "#6a6a7a" : (m.color || t.accent);
-              return (
+            {PARTY.filter(m => !m.hiddenUntilQuest || s.uq.includes(m.hiddenUntilQuest)).map(m => (
                 <div key={m.name} className="rounded-lg p-3 flex items-center gap-3 card-padding transition-all duration-500" style={{
-                  background: mia
-                    ? "linear-gradient(135deg,rgba(20,20,26,0.8),rgba(10,10,14,0.6))"
-                    : `linear-gradient(135deg,${t.card},rgba(16,10,24,0.6))`,
-                  border: `1px solid ${borderColor}`,
-                  filter: mia ? "grayscale(0.85)" : undefined,
-                  opacity: mia ? 0.55 : 1,
+                  background: `linear-gradient(135deg,${t.card},rgba(16,10,24,0.6))`,
+                  border: `1px solid ${m.color || t.accent}55`,
                 }}>
                   <div className="w-12 h-12 rounded flex items-center justify-center shrink-0 overflow-hidden" style={{
-                    background: mia ? "rgba(40,40,48,0.4)" : `${m.color || t.accent}1a`,
-                    border: `2px solid ${iconColor}${mia ? "" : "aa"}`,
-                    boxShadow: mia ? "none" : `0 0 12px ${(m.color || t.accent)}44`,
+                    background: `${m.color || t.accent}1a`,
+                    border: `2px solid ${(m.color || t.accent)}aa`,
+                    boxShadow: `0 0 12px ${(m.color || t.accent)}44`,
                   }}>
                     <span className="text-xl">{m.icon}</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline gap-2 flex-wrap">
-                      <div style={{ color: mia ? "#8a8a98" : (m.color || t.accent), fontSize: "14px", fontWeight: 900, fontFamily: "'Cinzel',serif", letterSpacing: "0.5px" }}>
-                        {m.name}
-                      </div>
-                      {mia ? (
-                        <div style={{ color: "#ff5060", fontSize: "9px", fontFamily: "'JetBrains Mono',monospace", fontWeight: 900, letterSpacing: "2px", padding: "1px 6px", border: "1px solid rgba(255,80,96,0.5)", borderRadius: "3px", background: "rgba(255,80,96,0.08)" }}>
-                          ◆ MIA
-                        </div>
-                      ) : (
-                        <div style={{ color: isMauritz ? "#ff8040" : "#ffd040", fontSize: "10px", fontFamily: "'JetBrains Mono',monospace", fontWeight: 700, letterSpacing: "1px" }}>
-                          Lv {st.level}
-                        </div>
-                      )}
+                    <div style={{ color: m.color || t.accent, fontSize: "14px", fontWeight: 900, fontFamily: "'Cinzel',serif", letterSpacing: "0.5px" }}>
+                      {m.name}
                     </div>
-                    <div style={{ color: mia ? "#6a6a7a" : "#a8988a", fontSize: "11px", marginTop: "2px", fontFamily: "'JetBrains Mono',monospace", letterSpacing: "0.5px" }}>
+                    <div style={{ color: "#a8988a", fontSize: "11px", marginTop: "2px", fontFamily: "'JetBrains Mono',monospace", letterSpacing: "0.5px" }}>
                       {`${m.cls.toUpperCase()} · ${m.role}`}
                     </div>
-                    {!mia && (
-                      <div style={{ marginTop: "4px", fontSize: "10px", fontFamily: "'JetBrains Mono',monospace", letterSpacing: "0.5px" }}>
-                        <span style={{ color: "#8aff8a" }}>HP {st.hp.toLocaleString()}</span>
-                        <span style={{ color: "#5a4a6a" }}>{"  ·  "}</span>
-                        <span style={{ color: "#b080ff" }}>{st.primary} {st.primaryVal}</span>
-                      </div>
-                    )}
                   </div>
                 </div>
-              );
-            })}
+            ))}
 
             {/* Jonna card — the target */}
             <div className="mt-4 rounded-lg p-4 card-padding relative overflow-hidden" style={{
@@ -484,7 +442,7 @@ function App() {
             <div className="mb-4 rounded-lg p-4 card-padding text-center" style={{ background: `linear-gradient(135deg,${t.accent}15,${t.card})`, border: `1px solid ${t.accent}55` }}>
               <div style={{ color: t.accent, fontSize: "11px", letterSpacing: "3px", fontFamily: "'JetBrains Mono',monospace", fontWeight: 700 }}>◆ THE BOND PROGRESSION ◆</div>
               <div style={{ color: "#b8a88a", fontSize: "11px", marginTop: "8px", fontStyle: "italic", lineHeight: 1.5 }}>
-                Du måste bevisa att du är värdig THE ETERNAL BOND.<br />Jonna väntar... men kommer du klara det?
+                Resan från Unworthy till Bound.<br />Jonna väntar vid slutet.
               </div>
             </div>
             {LEVELS.map((l, i) => {
@@ -561,7 +519,7 @@ function App() {
           <button onClick={() => {
               // add +100 xp via a fake side-quest style tick — we just drop loot and bump
               const ns = { ...s };
-              const it = rollLoot(["common","rare","epic","legendary"][Math.floor(Math.random()*4)], s.loot || []);
+              const it = rollLoot(["common","rare","epic","legendary"][Math.floor(Math.random()*4)]);
               ns.loot = [...(s.loot || []), it];
               setS(ns); ebSave(ns);
               setLootUp(it); if (!s.muted) SFX.loot(it.tier);
